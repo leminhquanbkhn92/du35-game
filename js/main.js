@@ -75,11 +75,13 @@ function assignSeats(list) {
   const R = C.seating || {};
   const qaStacks = R.qaStacks || ['Manual Test', 'Automation Tester', 'QA Baseband'];
   const unitAreas = R.unitAreas || { 'DU35.1': ['du35', 'm2', 'erc', 'presale'], 'DU35.2': ['m3', 'm4', 'm5', 'presale'], 'DU35.3': ['sdax', 'stl'], 'DU35.4': ['br1', 'br2'] };
-  const npcNames = new Set(Object.values(C.npcs).map((n) => n.name).filter(Boolean));
+  // so tên không phân biệt dấu/hoa thường để không bị trùng (vd. "Nhuy" và "Nhụy")
+  const norm = (x) => x.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/gi, 'd').toLowerCase().trim();
+  const npcNames = new Set(Object.values(C.npcs).map((n) => n.name).filter(Boolean).map(norm));
   const taken = new Set(usedSeats);
   const freeIn = (a) => (areaSeats[a] || []).filter((id) => !taken.has(id));
   const out = [];
-  const people = list.filter((s) => !npcNames.has(s.name));
+  const people = list.filter((s) => !npcNames.has(norm(s.name)));
   const give = (s, id) => { taken.add(id); out.push({ person: s, seat: id }); s._seated = true; };
   for (const s of people) { const id = s.seat && seatFor(s.seat); if (id && !taken.has(id)) give(s, id); }
   const fill = (area, pred) => { for (const s of people) { if (s._seated || !pred(s)) continue; const f = freeIn(area); if (!f.length) return; give(s, f[0]); } };
@@ -514,11 +516,12 @@ const addMin = (hhmm, m) => {
   return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
 };
 const areaName = (a) => (C.areas && C.areas[a]) || a;
+const pkey = (p) => `${p.name}|${p.stack || ''}`; // 2 người trùng tên vẫn tách riêng
 function personOf(n) { return n.person || { name: `Đồng nghiệp ${n.id.slice(1)}`, unit: 'DU35', stack: '' }; }
 function infoOf(n) {
   const p = personOf(n);
   S.mgr ||= {};
-  return (S.mgr[p.name] ||= statusOf(p, areaName(seats[n.seat].area)));
+  return (S.mgr[pkey(p)] ||= statusOf(p, areaName(seats[n.seat].area)));
 }
 function progressBar(v, color) { return `<div class="meter"><div class="bar"><i style="width:${v}%;background:${color}"></i></div><b>${v}%</b></div>`; }
 
@@ -590,7 +593,7 @@ function reportRows() {
     const a = seats[n.seat].area;
     const r = (by[a] ||= { area: areaName(a), total: 0, asked: 0, sum: 0, blocked: 0, risk: 0 });
     r.total++;
-    const st = S.mgr?.[personOf(n).name];
+    const st = S.mgr?.[pkey(personOf(n))];
     if (st && st.asked) { r.asked++; r.sum += st.progress; if (st.status === 'blocked') r.blocked++; if (st.status === 'atrisk') r.risk++; }
   }
   return Object.values(by);
