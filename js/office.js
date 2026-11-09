@@ -3,14 +3,14 @@ import { scene, mat, box, cyl, canvasTexture, signMesh, label } from './stage.js
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 // Sơ đồ tầng 5 – DU35. Toạ độ: x trái(-) → phải(+), z trên/bắc(-) → dưới/nam(+). Lối vào ở phía nam.
-// Quy đổi từ ảnh sơ đồ: x = (px - 1000) / 28, z = (py - 195) / 30 (đơn vị: mét)
-export const BOUNDS = { minX: -35.6, maxX: 29.9, minZ: -6.4, maxZ: 6.2 };
+// Quy đổi từ ảnh sơ đồ (đã nới rộng): x ≈ (px - 1000) / 22, z ≈ (py - 195) / 18 (đơn vị: mét)
+export const BOUNDS = { minX: -45.4, maxX: 38.1, minZ: -10.7, maxZ: 10.5 };
 export const colliders = [];   // {minX,maxX,minZ,maxZ}
 export const seats = {};       // id -> {x,z,rot,screen}
 export const areaSeats = {};   // khu -> [seatId]
 export const spots = {};       // id -> Vector3 (điểm tương tác)
 export const rooms = {};       // id -> {name, slots, center}
-export const spawn = { x: -14.6, z: 5.4 };
+export const spawn = { x: -18.6, z: 9.4 };
 
 const WALL_H = 2.6;
 const addCol = (minX, maxX, minZ, maxZ) => colliders.push({ minX, maxX, minZ, maxZ });
@@ -110,34 +110,15 @@ function deskTop(cx, cz, w, d) {
   addCol(cx - w / 2 - 0.05, cx + w / 2 + 0.05, cz - d / 2 - 0.05, cz + d / 2 + 0.05);
 }
 
-// cụm 4 bàn nằm ngang (ghế phía bắc & nam)
-function clusterH(area, cx, cz) {
-  deskTop(cx, cz, 3.2, 1.6);
-  scene.add(box(3.1, 0.3, 0.03, '#c9d3e0', cx, 0.92, cz));
-  for (const dx of [-0.8, 0.8]) { addSeat(area, cx + dx, cz - 1.25, 0); addSeat(area, cx + dx, cz + 1.25, Math.PI); }
-}
-// cụm 4 bàn nằm dọc (ghế phía tây & đông)
-function clusterV(area, cx, cz) {
-  deskTop(cx, cz, 1.6, 3.2);
-  scene.add(box(0.03, 0.3, 3.1, '#c9d3e0', cx, 0.92, cz));
-  for (const dz of [-0.8, 0.8]) { addSeat(area, cx - 1.25, cz + dz, Math.PI / 2); addSeat(area, cx + 1.25, cz + dz, -Math.PI / 2); }
-}
-// dãy bàn dài, ghế một phía. side: 'n' ghế phía bắc, 's' ghế phía nam
-function deskRow(area, x1, x2, z, side) {
-  deskTop((x1 + x2) / 2, z, x2 - x1, 0.8);
-  const n = Math.floor((x2 - x1) / 1.4);
-  const off = (x2 - x1 - (n - 1) * 1.4) / 2;
-  for (let i = 0; i < n; i++) addSeat(area, x1 + off + i * 1.4, side === 'n' ? z - 0.83 : z + 0.83, side === 'n' ? 0 : Math.PI);
-}
 // dãy bàn dọc sát tường, ghế phía đông
-function deskColumn(area, x, z1, z2, pitch = 1.0) {
+function deskColumn(area, x, z1, z2, pitch = 1.25) {
   deskTop(x, (z1 + z2) / 2, 0.8, z2 - z1);
   const n = Math.floor((z2 - z1) / pitch);
   const off = (z2 - z1 - (n - 1) * pitch) / 2;
   for (let i = 0; i < n; i++) addSeat(area, x + 0.83, z1 + off + i * pitch, -Math.PI / 2);
 }
 // dãy bàn đôi (ghế 2 bên). vertical = bàn chạy theo trục z
-function bench(area, cx, cz, len, vertical, pitch = 1.0) {
+function bench(area, cx, cz, len, vertical, pitch = 1.25) {
   if (vertical) { deskTop(cx, cz, 1.4, len); scene.add(box(0.03, 0.3, len - 0.1, '#c9d3e0', cx, 0.92, cz)); }
   else { deskTop(cx, cz, len, 1.4); scene.add(box(len - 0.1, 0.3, 0.03, '#c9d3e0', cx, 0.92, cz)); }
   const n = Math.floor(len / pitch), start = -((n - 1) * pitch) / 2;
@@ -192,87 +173,89 @@ export function buildOffice(C) {
   const A = C.areas || {};
   // ---------- sàn ----------
   const floorTex = canvasTexture(512, 512, (g) => {
-    g.fillStyle = '#b9bfc8'; g.fillRect(0, 0, 512, 512);
-    g.strokeStyle = 'rgba(0,0,0,0.08)'; g.lineWidth = 3;
+    g.fillStyle = '#c3c8d0'; g.fillRect(0, 0, 512, 512);
+    g.strokeStyle = 'rgba(0,0,0,0.07)'; g.lineWidth = 3;
     for (let i = 0; i <= 512; i += 128) { g.beginPath(); g.moveTo(i, 0); g.lineTo(i, 512); g.stroke(); g.beginPath(); g.moveTo(0, i); g.lineTo(512, i); g.stroke(); }
-    for (let k = 0; k < 2500; k++) { g.fillStyle = `rgba(0,0,0,${Math.random() * 0.05})`; g.fillRect(Math.random() * 512, Math.random() * 512, 2, 2); }
+    for (let k = 0; k < 2500; k++) { g.fillStyle = `rgba(0,0,0,${Math.random() * 0.04})`; g.fillRect(Math.random() * 512, Math.random() * 512, 2, 2); }
   });
   floorTex.wrapS = floorTex.wrapT = THREE.RepeatWrapping;
-  floorTex.repeat.set(16, 3);
-  const W = BOUNDS.maxX - BOUNDS.minX + 0.2, D = BOUNDS.maxZ - BOUNDS.minZ + 0.2;
+  floorTex.repeat.set(21, 5.5);
+  const W = BOUNDS.maxX - BOUNDS.minX + 0.4, D = BOUNDS.maxZ - BOUNDS.minZ + 0.4;
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D), new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.95 }));
   floor.rotation.x = -Math.PI / 2;
   floor.position.set((BOUNDS.minX + BOUNDS.maxX) / 2, 0, (BOUNDS.minZ + BOUNDS.maxZ) / 2);
   floor.receiveShadow = true;
   scene.add(floor);
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(160, 60), mat('#c7d3df'));
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 80), mat('#c7d3df'));
   ground.rotation.x = -Math.PI / 2; ground.position.y = -0.02; ground.receiveShadow = true;
   scene.add(ground);
 
   // ---------- tường ngoài ----------
-  const { minX, maxX, minZ, maxZ } = { minX: -35.7, maxX: 30, minZ: -6.5, maxZ: 6.33 };
+  const minX = -45.5, maxX = 38.2, minZ = -10.8, maxZ = 10.6;
   wall(minX, minZ, maxX, minZ);
   wall(minX, minZ, minX, maxZ);
   wall(maxX, minZ, maxX, maxZ);
-  wall(minX, maxZ, maxX, maxZ, { h: 0.9, color: '#d9dee6', gaps: [[-15.8, -13.4]] });
-  // cửa sổ tường bắc
+  wall(minX, maxZ, maxX, maxZ, { h: 0.9, color: '#d9dee6', gaps: [[-19.9, -17.3]] });
   const winMat = new THREE.MeshStandardMaterial({ color: '#a9d6f5', emissive: '#a9d6f5', emissiveIntensity: 0.35 });
-  for (let x = -8; x <= 26; x += 4.5) { const w = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 1.2), winMat); w.position.set(x, 1.75, minZ + 0.08); scene.add(w); }
+  for (let x = -1; x <= 34; x += 5) { const w = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.3), winMat); w.position.set(x, 1.75, minZ + 0.08); scene.add(w); }
+  for (let z = -8; z <= 8; z += 5) { const w = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.3), winMat); w.position.set(maxX - 0.08, 1.75, z); w.rotation.y = -Math.PI / 2; scene.add(w); }
   // lối vào
-  floorPatch(-16, -13.2, 5.2, 6.3, '#1f5eff', 0.015);
-  scene.add(box(0.25, 2.4, 0.25, '#3b4659', -15.9, 1.2, maxZ));
-  scene.add(box(0.25, 2.4, 0.25, '#3b4659', -13.3, 1.2, maxZ));
-  scene.add(box(2.85, 0.3, 0.25, '#3b4659', -14.6, 2.45, maxZ));
-  sign('LỐI VÀO · EXIT', 2.2, 0.26, -14.6, 2.45, maxZ - 0.14, Math.PI, { bg: '#1aa36b', size: 0.55 });
-  spots.exit = new THREE.Vector3(-14.6, 0, 5.8);
+  floorPatch(-20.1, -17.1, 9.2, 10.55, '#1f5eff', 0.015);
+  scene.add(box(0.25, 2.4, 0.25, '#3b4659', -20.0, 1.2, maxZ));
+  scene.add(box(0.25, 2.4, 0.25, '#3b4659', -17.2, 1.2, maxZ));
+  scene.add(box(3.05, 0.3, 0.25, '#3b4659', -18.6, 2.45, maxZ));
+  sign('LỐI VÀO · EXIT', 2.2, 0.26, -18.6, 2.45, maxZ - 0.14, Math.PI, { bg: '#1aa36b', size: 0.55 });
+  spots.exit = new THREE.Vector3(-18.6, 0, 10.0);
 
   // ================= KHU TRÁI =================
   // Phòng dự án (ERC trên sơ đồ)
-  floorPatch(-35.6, -30.6, -6.4, 0.67, '#cfd8e3', 0.012);
-  wall(-30.6, -6.5, -30.6, 0.67, { material: glassMat });
-  wall(-35.7, 0.67, -30.6, 0.67, { material: glassMat, gaps: [[-32.4, -31.0]] });
-  deskColumn('erc', -35.2, -6.0, 0.2);
-  bench('erc', -32.4, -3.3, 5.4, true);
-  areaLabel(A.erc || 'Phòng dự án', -33.1, -3);
-  sign(A.erc || 'Phòng dự án', 1.6, 0.3, -31.7, 2.25, 0.75, 0, { bg: '#0f1a2e', size: 0.45 });
+  floorPatch(-45.4, -39.0, -10.7, 1.1, '#cfd8e3', 0.012);
+  wall(-39.0, minZ, -39.0, 1.1, { material: glassMat });
+  wall(minX, 1.1, -39.0, 1.1, { material: glassMat, gaps: [[-43.7, -42.5]] });
+  deskColumn('erc', -45.0, -10.0, 0.0);
+  bench('erc', -40.9, -5.1, 9.6, true);
+  areaLabel(A.erc || 'Phòng dự án', -42.2, -5);
+  sign(A.erc || 'Phòng dự án', 1.6, 0.3, -41.0, 2.25, 1.18, 0, { bg: '#0f1a2e', size: 0.45 });
 
   // Pre-sale & QA + bàn quản lý phía trên
-  floorPatch(-30, -20.2, -4.4, 2.8, '#8796ab');
-  bench('presale', -27.5, -2.6, 4.2, false); bench('presale', -27.5, 1.0, 4.2, false);
-  bench('qa', -22.7, -2.6, 4.2, false); bench('qa', -22.7, 1.0, 4.2, false);
-  managerDesk('sdm', -29.1, -5.0, 'SDM');
-  managerDesk('presale', -26.0, -5.0, 'PRE-SALE');
-  managerDesk('qa', -22.6, -5.0, 'QA MANAGER');
-  areaLabel(A.presale || 'Pre-sale', -27.5, -0.8);
-  areaLabel(A.qa || 'QA', -22.7, -0.8);
+  floorPatch(-38.4, -25.5, -7.4, 3.2, '#8796ab');
+  bench('presale', -34.6, -4.8, 6.2, false);
+  bench('presale', -34.6, 0.2, 6.2, false);
+  bench('qa', -28.15, -2.1, 9.4, true);
+  managerDesk('sdm', -37.0, -8.6, 'SDM');
+  managerDesk('presale', -33.2, -8.6, 'PRE-SALE');
+  managerDesk('qa', -28.2, -8.6, 'QA MANAGER');
+  areaLabel(A.presale || 'Pre-sale', -34.6, -2.3);
+  areaLabel(A.qa || 'QA', -28.15, -2.1);
 
   // Tủ giày – sát tường phía nam
-  scene.add(box(15.2, 1.0, 0.9, '#c9b08a', -28.0, 0.5, 5.8));
-  for (let i = 0; i < 12; i++) scene.add(box(1.15, 0.85, 0.02, '#b89c74', -34.95 + i * 1.27, 0.5, 5.34));
-  addCol(-35.65, -20.35, 5.3, 6.33);
-  areaLabel('Tủ giày', -28, 5.8, 1.7);
+  scene.add(box(19.3, 1.0, 0.85, '#c9b08a', -35.65, 0.5, 10.15));
+  for (let i = 0; i < 15; i++) scene.add(box(1.2, 0.85, 0.02, '#b89c74', -44.6 + i * 1.28, 0.5, 9.71));
+  addCol(-45.4, -25.95, 9.65, maxZ);
+  areaLabel('Tủ giày', -35.6, 10.1, 1.7);
 
   // Góc cà phê (thêm cho game – không có trong sơ đồ), sát tường phía tây
-  const CX = -31.6, CZ = 3.5;
-  floorPatch(-35.6, -29.2, 1.9, 5.2, '#d9b98c', 0.012);
-  scene.add(box(0.6, 0.95, 2.4, '#f2f2f2', -35.3, 0.48, CZ));
-  scene.add(box(0.65, 0.05, 2.5, '#3b4659', -35.3, 0.98, CZ));
-  addCol(-35.7, -34.95, CZ - 1.25, CZ + 1.25);
+  const CX = -41.6, CZ = 5.8;
+  floorPatch(minX + 0.1, -38.0, 2.6, 8.9, '#d9b98c', 0.012);
+  scene.add(box(0.6, 0.95, 2.6, '#f2f2f2', -45.15, 0.48, CZ));
+  scene.add(box(0.65, 0.05, 2.7, '#3b4659', -45.15, 0.98, CZ));
+  addCol(minX, -44.8, CZ - 1.35, CZ + 1.35);
   const cm = new THREE.Group();
   cm.add(box(0.42, 0.6, 0.5, '#2b2f38', 0, 0, 0));
   cm.add(box(0.05, 0.12, 0.3, '#ff7a1a', 0.22, 0.1, 0));
-  cm.position.set(-35.3, 1.31, CZ - 0.5); scene.add(cm);
-  spots.coffee = new THREE.Vector3(-34.3, 0, CZ - 0.5);
-  scene.add(cyl(0.75, 0.75, 0.06, '#ffffff', CX, 0.76, CZ, 24));
+  cm.position.set(-45.15, 1.31, CZ - 0.6); scene.add(cm);
+  spots.coffee = new THREE.Vector3(-44.1, 0, CZ - 0.6);
+  scene.add(cyl(0.8, 0.8, 0.06, '#ffffff', CX, 0.76, CZ, 24));
   scene.add(cyl(0.08, 0.3, 0.74, '#9aa1ad', CX, 0.37, CZ, 12));
-  addCol(CX - 0.8, CX + 0.8, CZ - 0.8, CZ + 0.8);
+  addCol(CX - 0.85, CX + 0.85, CZ - 0.85, CZ + 0.85);
+  for (let i = 0; i < 4; i++) { const a = i * Math.PI / 2 + Math.PI / 4; scene.add(cyl(0.2, 0.2, 0.06, '#ff9f1c', CX + Math.cos(a) * 1.25, 0.5, CZ + Math.sin(a) * 1.25, 12)); }
   areaLabel('Góc cà phê', CX, CZ);
-  spots.pantry = new THREE.Vector3(CX, 0, CZ - 1.6);
+  spots.pantry = new THREE.Vector3(CX, 0, CZ - 1.8);
   const f = { x: CX, z: CZ };
   rooms.pantry = { name: 'Góc cà phê', center: f, slots: [
-    { x: CX - 1.2, z: CZ - 0.9, face: f }, { x: CX + 1.2, z: CZ - 0.9, face: f },
-    { x: CX - 1.2, z: CZ + 0.9, face: f }, { x: CX + 1.2, z: CZ + 0.9, face: f },
-    { x: CX, z: CZ - 1.3, face: f }, { x: CX + 1.5, z: CZ, face: f },
+    { x: CX - 1.3, z: CZ - 1.0, face: f }, { x: CX + 1.3, z: CZ - 1.0, face: f },
+    { x: CX - 1.3, z: CZ + 1.0, face: f }, { x: CX + 1.3, z: CZ + 1.0, face: f },
+    { x: CX, z: CZ - 1.45, face: f }, { x: CX + 1.6, z: CZ, face: f },
   ] };
   const cake = new THREE.Group();
   cake.add(cyl(0.22, 0.22, 0.16, '#fff3e6', 0, 0, 0));
@@ -281,121 +264,120 @@ export function buildOffice(C) {
   cake.position.set(CX, 0.87, CZ); cake.visible = false; cake.traverse((o) => (o.userData.keep = true)); scene.add(cake);
 
   // Bảng thành viên DU35 (kiosk gần lối vào)
-  scene.add(box(0.9, 1.0, 0.45, '#0f1a2e', -19.2, 0.5, 4.6));
+  scene.add(box(0.9, 1.0, 0.45, '#0f1a2e', -24.0, 0.5, 8.6));
   const kiosk = signMesh('THÀNH VIÊN DU35', 0.86, 0.5, { bg: '#1f5eff', size: 0.2 });
-  kiosk.position.set(-19.2, 1.08, 4.6); kiosk.rotation.x = -Math.PI / 2 + 0.35; scene.add(kiosk);
-  addCol(-19.7, -18.7, 4.35, 4.85);
-  areaLabel('Bảng thành viên', -19.2, 4.6, 1.8);
-  spots.directory = new THREE.Vector3(-19.2, 0, 3.8);
+  kiosk.position.set(-24.0, 1.08, 8.6); kiosk.rotation.x = -Math.PI / 2 + 0.35; scene.add(kiosk);
+  addCol(-24.5, -23.5, 8.35, 8.85);
+  areaLabel('Bảng thành viên', -24.0, 8.6, 1.8);
+  spots.directory = new THREE.Vector3(-24.0, 0, 7.8);
 
   // ================= KHU GIỮA: phòng họp & lễ tân =================
   // Meeting room 1
-  floorPatch(-17.6, -10.4, -6.4, -1.5, '#cfd8e3', 0.012);
-  wall(-17.6, -6.5, -17.6, -1.5, { material: glassMat, gaps: [[-3.0, -1.7]] });
-  wall(-10.4, -6.5, -10.4, -1.5, { material: glassMat });
-  wall(-17.6, -1.5, -10.4, -1.5, { material: frostMat });
-  meetingTable(-13.8, -4.0, 4.2, 1.4);
-  scene.add(box(2.4, 1.2, 0.05, '#ffffff', -13.8, 1.5, -6.42));
-  sign('DAILY 9:15', 1.4, 0.3, -14.2, 1.8, -6.38, 0, { bg: '#ffffff', fg: '#1f5eff', size: 0.6 });
-  areaLabel('Meeting room 1', -14, -4);
-  rooms.room_1 = { name: 'Meeting room 1', center: { x: -13.8, z: -4.0 }, slots: slotsAround(-13.8, -4.0, 4.2, 1.4, 6) };
-  spots.room_1 = new THREE.Vector3(-16.7, 0, -2.4);
+  floorPatch(-22.4, -13.2, -10.7, -1.1, '#cfd8e3', 0.012);
+  wall(-22.4, minZ, -22.4, -1.1, { material: glassMat, gaps: [[-3.3, -1.9]] });
+  wall(-13.2, minZ, -13.2, -1.1, { material: glassMat });
+  wall(-22.4, -1.1, -13.2, -1.1, { material: frostMat });
+  meetingTable(-17.6, -6.0, 5.0, 1.6);
+  scene.add(box(2.6, 1.2, 0.05, '#ffffff', -17.6, 1.5, minZ + 0.08));
+  sign('DAILY 9:15', 1.4, 0.3, -18.0, 1.8, minZ + 0.12, 0, { bg: '#ffffff', fg: '#1f5eff', size: 0.6 });
+  areaLabel('Meeting room 1', -17.6, -6);
+  rooms.room_1 = { name: 'Meeting room 1', center: { x: -17.6, z: -6.0 }, slots: slotsAround(-17.6, -6.0, 5.0, 1.6, 6) };
+  spots.room_1 = new THREE.Vector3(-21.4, 0, -2.6);
   // Meeting room 2 & 3
-  floorPatch(-17.6, -10.4, -1.5, 1.2, '#d6dde7', 0.012);
-  wall(-17.6, -1.5, -17.6, 1.2, { material: glassMat });
-  wall(-14.3, -1.5, -14.3, 1.2, { material: frostMat });
-  wall(-10.4, -1.5, -10.4, 1.2, { material: glassMat });
-  wall(-17.6, 1.2, -10.4, 1.2, { material: glassMat, gaps: [[-16.5, -15.3], [-12.9, -11.6]] });
-  meetingTable(-15.95, -0.3, 1.4, 0.8);
-  meetingTable(-12.3, -0.5, 1.8, 0.8);
-  scene.add(box(1.8, 1.0, 0.06, '#111622', -12.3, 1.55, -1.4));
-  sign('VIDEO CALL', 1.64, 0.88, -12.3, 1.55, -1.36, 0, { bg: '#1b3a7a', size: 0.2 });
-  areaLabel('Meeting 2', -15.95, -0.2);
-  areaLabel('Meeting 3', -12.3, -0.2);
-  rooms.room_2 = { name: 'Meeting room 2', center: { x: -15.95, z: -0.3 }, slots: slotsAround(-15.95, -0.3, 1.4, 0.8, 2) };
-  rooms.room_3 = { name: 'Meeting room 3', center: { x: -12.3, z: -0.5 }, slots: [
-    { x: -13.55, z: -0.5, face: { x: -12.3, z: -0.5 } }, { x: -11.05, z: -0.5, face: { x: -12.3, z: -0.5 } },
-    { x: -12.85, z: 0.35, face: { x: -12.3, z: -0.5 } }, { x: -11.75, z: 0.35, face: { x: -12.3, z: -0.5 } }] };
-  spots.room_2 = new THREE.Vector3(-15.9, 0, 0.7);
-  spots.room_3 = new THREE.Vector3(-12.25, 0, 0.75);
+  floorPatch(-22.4, -13.2, -1.1, 2.6, '#d6dde7', 0.012);
+  wall(-22.4, -1.1, -22.4, 2.6, { material: glassMat });
+  wall(-18.2, -1.1, -18.2, 2.6, { material: frostMat });
+  wall(-13.2, -1.1, -13.2, 2.6, { material: glassMat });
+  wall(-22.4, 2.6, -13.2, 2.6, { material: glassMat, gaps: [[-20.9, -19.6], [-16.3, -15.0]] });
+  meetingTable(-20.3, 0.5, 1.6, 0.9);
+  meetingTable(-15.7, 0.4, 2.2, 0.9);
+  scene.add(box(1.9, 1.05, 0.06, '#111622', -15.7, 1.55, -1.0));
+  sign('VIDEO CALL', 1.74, 0.92, -15.7, 1.55, -0.96, 0, { bg: '#1b3a7a', size: 0.2 });
+  areaLabel('Meeting 2', -20.3, 0.5);
+  areaLabel('Meeting 3', -15.7, 0.5);
+  rooms.room_2 = { name: 'Meeting room 2', center: { x: -20.3, z: 0.5 }, slots: slotsAround(-20.3, 0.5, 1.6, 0.9, 2) };
+  rooms.room_3 = { name: 'Meeting room 3', center: { x: -15.7, z: 0.4 }, slots: [
+    { x: -17.15, z: 0.4, face: { x: -15.7, z: 0.4 } }, { x: -14.25, z: 0.4, face: { x: -15.7, z: 0.4 } },
+    { x: -16.3, z: 1.4, face: { x: -15.7, z: 0.4 } }, { x: -15.1, z: 1.4, face: { x: -15.7, z: 0.4 } }] };
+  spots.room_2 = new THREE.Vector3(-20.25, 0, 2.0);
+  spots.room_3 = new THREE.Vector3(-15.65, 0, 2.05);
   // Lễ tân
-  scene.add(box(5.8, 1.05, 0.6, '#ffffff', -14.5, 0.53, 2.8));
-  scene.add(box(5.9, 0.06, 0.7, '#1f5eff', -14.5, 1.08, 2.8));
-  addCol(-17.45, -11.55, 2.45, 3.15);
-  sign('LỄ TÂN · RECEPTION', 2.4, 0.3, -14.5, 0.7, 3.11, 0, { bg: '#0f1a2e', size: 0.5 });
-  chair(-14.5, 2.0, 0);
-  monitor(-13.7, 2.65, Math.PI);
-  seats.reception = { x: -14.5, z: 2.0, rot: 0, area: 'reception' };
-  plant(-17.9, 5.8, 0.9); plant(-11.2, 5.8, 0.9);
+  scene.add(box(6.2, 1.05, 0.65, '#ffffff', -18.5, 0.53, 4.75));
+  scene.add(box(6.3, 0.06, 0.75, '#1f5eff', -18.5, 1.08, 4.75));
+  addCol(-21.65, -15.35, 4.38, 5.12);
+  sign('LỄ TÂN · RECEPTION', 2.4, 0.3, -18.5, 0.7, 5.09, 0, { bg: '#0f1a2e', size: 0.5 });
+  chair(-18.5, 3.85, 0);
+  monitor(-17.6, 4.55, Math.PI);
+  seats.reception = { x: -18.5, z: 3.85, rot: 0, area: 'reception' };
+  plant(-22.3, 10.0, 0.9); plant(-14.9, 10.0, 0.9);
 
   // ================= KHU GIỮA-PHẢI =================
-  // Phone booth 1 & 2
-  for (const [x1, x2, n] of [[-9.0, -6.2, 1], [-5.8, -3.0, 2]]) {
-    wall(x1, -6.5, x1, -4.6, { material: frostMat });
-    wall(x2, -6.5, x2, -4.6, { material: frostMat });
-    wall(x1, -4.6, x2, -4.6, { material: glassMat, gaps: [[(x1 + x2) / 2 - 0.6, (x1 + x2) / 2 + 0.6]] });
-    scene.add(box(1.0, 0.05, 0.5, '#e7dccb', (x1 + x2) / 2, 0.74, -6.1));
-    chair((x1 + x2) / 2, -5.5, Math.PI);
-    areaLabel(`Phone booth ${n}`, (x1 + x2) / 2, -5.6, 2.4);
+  for (const [x1, x2, n] of [[-11.5, -7.9, 1], [-7.4, -3.8, 2]]) {
+    wall(x1, minZ, x1, -7.6, { material: frostMat });
+    wall(x2, minZ, x2, -7.6, { material: frostMat });
+    wall(x1, -7.6, x2, -7.6, { material: glassMat, gaps: [[(x1 + x2) / 2 - 0.65, (x1 + x2) / 2 + 0.65]] });
+    scene.add(box(1.1, 0.05, 0.55, '#e7dccb', (x1 + x2) / 2, 0.74, -10.3));
+    chair((x1 + x2) / 2, -9.6, Math.PI);
+    areaLabel(`Phone booth ${n}`, (x1 + x2) / 2, -9.2, 2.4);
   }
-  // Các khu member
-  floorPatch(-9.2, 12.9, -3.8, 2.9, '#8796ab');
-  const MID = [['du35', -7.6], ['m2', -4.4], ['m3', -1.2], ['m3', 2.0], ['m4', 5.2], ['m5', 8.4], ['m5', 11.6]];
-  for (const [a, x] of MID) bench(a, x, -0.4, 6.2, true);
-  managerDesk('empty', 0.64, -4.9, 'MANAGER');
-  managerDesk('director', 5.66, -4.9, 'GIÁM ĐỐC');
-  managerDesk('manager2', 10.48, -4.9, 'MANAGER');
-  areaLabel(A.du35 || 'DU35', -7.6, -0.4);
-  areaLabel(A.m2 || 'Member', -4.4, -0.4);
-  areaLabel(A.m3 || 'Member', 0.4, -0.4);
-  areaLabel(A.m4 || 'Member', 5.2, -0.4);
-  areaLabel(A.m5 || 'Member', 10.0, -0.4);
+  floorPatch(-11.8, 16.0, -6.0, 3.3, '#8796ab');
+  const MID = [['du35', -9.55], ['m2', -5.4], ['m3', 0.85], ['m4', 7.2], ['m5', 13.35]];
+  for (const [a, x] of MID) bench(a, x, -1.2, 7.8, true);
+  managerDesk('empty', 0.85, -8.5, 'MANAGER');
+  managerDesk('director', 7.2, -8.5, 'GIÁM ĐỐC');
+  managerDesk('manager2', 13.35, -8.5, 'MANAGER');
+  areaLabel(A.du35 || 'DU35', -9.55, -1.2);
+  areaLabel(A.m2 || 'Member', -5.4, -1.2);
+  areaLabel(A.m3 || 'Member', 0.85, -1.2);
+  areaLabel(A.m4 || 'Member', 7.2, -1.2);
+  areaLabel(A.m5 || 'Member', 13.35, -1.2);
+  plant(-12.4, -5.6); plant(3.9, -5.8, 0.9); plant(10.3, -5.8, 0.9); plant(16.6, -5.8, 0.9);
 
   // Kệ cây cảnh + ảnh khen ngợi từ khách hàng – sát tường phía nam
-  const KZ = 5.75;
-  scene.add(box(21.3, 1.0, 1.0, '#f7f4ee', 1.7, 0.5, KZ));
-  addCol(-8.95, 12.35, KZ - 0.55, 6.33);
+  const KZ = 10.1;
+  scene.add(box(27.2, 1.0, 0.95, '#f7f4ee', 2.1, 0.5, KZ));
+  addCol(-11.55, 15.75, KZ - 0.52, maxZ);
   const frameColors = ['#ffd84d', '#9fe0ff', '#ffb3c1', '#b7f5a1', '#d7c6ff'];
-  for (let i = 0; i < 14; i++) {
-    const x = -8.0 + i * 1.5;
+  for (let i = 0; i < 18; i++) {
+    const x = -10.6 + i * 1.5;
     if (i % 2 === 0) plant(x, KZ, 0.55, false).position.y = 1.0;
     else {
-      // khung ảnh dựng nghiêng trên kệ, mặt ảnh hướng vào trong văn phòng
-      const f = new THREE.Group();
-      f.add(box(0.5, 0.62, 0.04, '#3b4659', 0, 0, 0));
-      f.add(box(0.42, 0.54, 0.02, frameColors[i % 5], 0, 0, -0.025));
-      f.position.set(x, 1.18, KZ + 0.05); f.rotation.x = 1.1;
-      scene.add(f);
+      const fr = new THREE.Group();
+      fr.add(box(0.5, 0.62, 0.04, '#3b4659', 0, 0, 0));
+      fr.add(box(0.42, 0.54, 0.02, frameColors[i % 5], 0, 0, -0.025));
+      fr.position.set(x, 1.18, KZ + 0.05); fr.rotation.x = 1.1;
+      scene.add(fr);
     }
   }
-  areaLabel('Cây cảnh & ảnh khen ngợi từ khách hàng', 1.7, KZ, 2.1);
-  spots.kudos = new THREE.Vector3(1.7, 0, KZ - 1.2);
+  areaLabel('Cây cảnh & ảnh khen ngợi từ khách hàng', 2.1, KZ, 2.1);
+  spots.kudos = new THREE.Vector3(2.1, 0, KZ - 1.3);
 
   // ================= KHU PHẢI =================
-  // Team dự án SDAX & STL (dãy bàn dài)
-  floorPatch(14.0, 26.2, -4.4, 2.0, '#8796ab');
-  bench('sdax', 20.1, -2.85, 11.6, false);
-  bench('stl', 20.1, 0.45, 11.6, false);
-  areaLabel(A.sdax || 'Team dự án A', 20.1, -2.85);
-  areaLabel(A.stl || 'Team dự án B', 20.1, 0.45);
+  floorPatch(17.8, 33.3, -6.4, 2.2, '#8796ab');
+  bench('sdax', 25.5, -4.1, 14, false);
+  bench('stl', 25.5, 0.6, 14, false);
+  areaLabel(A.sdax || 'Team dự án A', 25.5, -4.1);
+  areaLabel(A.stl || 'Team dự án B', 25.5, 0.6);
   // Nhà vệ sinh
-  floorPatch(26.5, 29.9, -3.6, 0.7, '#e3eef2', 0.012);
-  wall(26.5, -3.6, 30, -3.6, { color: '#dfe5ec' });
-  wall(26.5, -3.6, 26.5, 0.7, { color: '#dfe5ec' });
-  wall(26.5, 0.7, 30, 0.7, { color: '#dfe5ec', gaps: [[27.4, 28.6]] });
-  sign('WC', 0.6, 0.4, 28.0, 2.2, 0.79, 0, { bg: '#1f5eff', size: 0.7 });
-  scene.add(box(1.2, 0.85, 0.5, '#ffffff', 28.2, 0.43, -3.25));
-  areaLabel('Nhà vệ sinh', 28.2, -1.5);
-  spots.wc = new THREE.Vector3(28.0, 0, 1.4);
+  floorPatch(33.8, maxX - 0.1, -6.0, 1.2, '#e3eef2', 0.012);
+  wall(33.8, -6.0, maxX, -6.0, { color: '#dfe5ec' });
+  wall(33.8, -6.0, 33.8, 1.2, { color: '#dfe5ec' });
+  wall(33.8, 1.2, maxX, 1.2, { color: '#dfe5ec', gaps: [[35.4, 36.7]] });
+  sign('WC', 0.6, 0.4, 36.05, 2.2, 1.29, 0, { bg: '#1f5eff', size: 0.7 });
+  scene.add(box(1.2, 0.85, 0.5, '#ffffff', 36.0, 0.43, -5.6));
+  areaLabel('Nhà vệ sinh', 36.0, -2.4);
+  spots.wc = new THREE.Vector3(36.05, 0, 2.0);
   // Member phía dưới & BA
-  floorPatch(14.5, 29.0, 3.0, 6.3, '#8796ab');
-  bench('br1', 17.4, 4.75, 5.4, false);
-  bench('br2', 23.0, 4.75, 5.4, false);
-  deskColumn('ba', 27.0, 2.5, 6.0);
-  areaLabel(A.br1 || 'Member', 17.4, 4.75);
-  areaLabel(A.br2 || 'Member', 23.0, 4.75);
-  areaLabel(A.ba || 'BA', 27.6, 4.3);
-  plant(13.4, 5.8); plant(29.4, 1.5, 0.8);
+  floorPatch(18.4, 36.4, 3.6, 10.5, '#8796ab');
+  bench('br1', 21.85, 5.5, 5.4, false);
+  bench('br1', 21.85, 9.0, 5.4, false);
+  bench('br2', 29.7, 5.5, 5.4, false);
+  bench('br2', 29.7, 9.0, 5.4, false);
+  deskColumn('ba', 34.4, 4.0, 10.0);
+  areaLabel(A.br1 || 'Member', 21.85, 7.25);
+  areaLabel(A.br2 || 'Member', 29.7, 7.25);
+  areaLabel(A.ba || 'BA', 35.0, 7.0);
+  plant(17.2, 9.9); plant(37.6, 3.0, 0.8);
 
   buildNavGrid();
   return { cake };

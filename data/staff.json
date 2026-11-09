@@ -17,1268 +17,1087 @@
    "name": "chị BT.Hải",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:1"
+   "stack": "Manual Test"
   },
   {
    "name": "chị BT.Hiền",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:2"
+   "stack": "Manual Test"
   },
   {
    "name": "anh DM.Hiếu",
    "female": false,
    "unit": "DU35.1",
-   "stack": "Automation Tester",
-   "seat": "qa:3"
+   "stack": "Automation Tester"
   },
   {
    "name": "anh HG.Bảo",
    "female": false,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:4"
+   "stack": "Manual Test"
   },
   {
    "name": "chị HT.Thao",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "ba:1"
+   "stack": "BA"
   },
   {
    "name": "chị LH.Ngọc",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "ba:2"
+   "stack": "BA"
   },
   {
    "name": "chị LK.Huyền",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:5"
+   "stack": "Manual Test"
   },
   {
    "name": "anh LK.Tuấn",
    "female": false,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "du35:1"
+   "stack": "BA"
   },
   {
    "name": "anh LM.Nghĩa",
    "female": false,
    "unit": "DU35.1",
-   "stack": "QA Baseband",
-   "seat": "qa:6"
+   "stack": "QA Baseband"
   },
   {
    "name": "chị LN.Minh",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "du35:3"
+   "stack": "BA"
   },
   {
    "name": "chị LP.Linh",
    "female": true,
    "unit": "DU35.1",
-   "stack": "QA Baseband",
-   "seat": "qa:7"
+   "stack": "QA Baseband"
   },
   {
    "name": "chị LTT.Tuyết",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:8"
+   "stack": "Manual Test"
   },
   {
    "name": "anh LV.Thành",
    "female": false,
    "unit": "DU35.1",
-   "stack": "Automation Tester",
-   "seat": "qa:9"
+   "stack": "Automation Tester"
   },
   {
    "name": "chị LT.Quyên",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:10"
+   "stack": "Manual Test"
   },
   {
    "name": "anh LV.Hưởng",
    "female": false,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:11"
+   "stack": "Manual Test"
   },
   {
    "name": "chị NK.Khánh",
    "female": true,
    "unit": "DU35.1",
-   "stack": "UX/UI Design",
-   "seat": "du35:4"
+   "stack": "UX/UI Design"
   },
   {
    "name": "chị NP.Nhi",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:12"
+   "stack": "Manual Test"
   },
   {
    "name": "anh NPT.Anh",
    "female": false,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:13"
+   "stack": "Manual Test"
   },
   {
    "name": "chị NT.Thảo",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:14"
+   "stack": "Manual Test"
   },
   {
    "name": "chị NT.Huyền",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "qa:15"
+   "stack": "Manual Test"
   },
   {
    "name": "chị NTH.Linh",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "du35:5"
+   "stack": "Manual Test"
   },
   {
    "name": "chị NT.Hồng",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "du35:6"
+   "stack": "Manual Test"
   },
   {
    "name": "chị NTM.Dung",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "du35:7"
+   "stack": "Manual Test"
   },
   {
    "name": "chị NTP.Nhung",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "du35:8"
+   "stack": "Manual Test"
   },
   {
    "name": "chị NTT.Hương",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "du35:9"
+   "stack": "Manual Test"
   },
   {
    "name": "chị NTT.Trang",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "du35:10"
+   "stack": "Manual Test"
   },
   {
    "name": "chị NT.Thận",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Automation Tester",
-   "seat": "du35:11"
+   "stack": "Automation Tester"
   },
   {
    "name": "chị NT.Tuyết",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "m2:2"
+   "stack": "Manual Test"
   },
   {
    "name": "anh NT.Thành",
    "female": false,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "m2:3"
+   "stack": "BA"
   },
   {
    "name": "anh NT.Giang",
    "female": false,
    "unit": "DU35.1",
-   "stack": "QA Baseband",
-   "seat": "m2:4"
+   "stack": "QA Baseband"
   },
   {
    "name": "anh NV.Thiết",
    "female": false,
    "unit": "DU35.1",
-   "stack": "QA Baseband",
-   "seat": "m2:5"
+   "stack": "QA Baseband"
   },
   {
    "name": "chị NVN.Ánh",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "m2:6"
+   "stack": "BA"
   },
   {
    "name": "anh NT.Tùng",
    "female": false,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "m2:7"
+   "stack": "BA"
   },
   {
    "name": "chị PP.Anh",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "m2:8"
+   "stack": "BA"
   },
   {
    "name": "anh PN.Hùng",
    "female": false,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "m2:9"
+   "stack": "Manual Test"
   },
   {
    "name": "chị PN.Linh",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "m2:10"
+   "stack": "Manual Test"
   },
   {
    "name": "anh PQ.Lân",
    "female": false,
    "unit": "DU35.1",
-   "stack": "QA Baseband",
-   "seat": "m2:11"
+   "stack": "QA Baseband"
   },
   {
    "name": "chị PQ.Phương",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "erc:0"
+   "stack": "BA"
   },
   {
    "name": "chị PT.Hằng",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "erc:1"
+   "stack": "BA"
   },
   {
    "name": "chị PT.Trang",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "erc:2"
+   "stack": "BA"
   },
   {
    "name": "chị PTT.Trang",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "erc:3"
+   "stack": "Manual Test"
   },
   {
    "name": "chị TT.Trang",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "erc:4"
+   "stack": "Manual Test"
   },
   {
    "name": "chị TT.Nụ",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Automation Tester",
-   "seat": "erc:5"
+   "stack": "Automation Tester"
   },
   {
    "name": "chị TD.Linh",
    "female": true,
    "unit": "DU35.1",
-   "stack": "QA Baseband",
-   "seat": "erc:6"
+   "stack": "QA Baseband"
   },
   {
    "name": "chị TT.Ngọc",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Automation Tester",
-   "seat": "erc:7"
+   "stack": "Automation Tester"
   },
   {
    "name": "chị TTN.Lan",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "erc:8"
+   "stack": "BA"
   },
   {
    "name": "chị TTQ.Trang",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "erc:9"
+   "stack": "Manual Test"
   },
   {
    "name": "chị TT.Tâm",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "erc:10"
+   "stack": "Manual Test"
   },
   {
    "name": "anh TV.Hưng",
    "female": false,
    "unit": "DU35.1",
-   "stack": "QA Baseband",
-   "seat": "erc:11"
+   "stack": "QA Baseband"
   },
   {
    "name": "chị TT.Dung",
    "female": true,
    "unit": "DU35.1",
-   "stack": "C++",
-   "seat": "erc:12"
+   "stack": "C++"
   },
   {
    "name": "chị TTN.Anh",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "erc:13"
+   "stack": "BA"
   },
   {
    "name": "chị VT.Phương",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "erc:14"
+   "stack": "Manual Test"
   },
   {
    "name": "anh VT.Đạt",
    "female": false,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "erc:15"
+   "stack": "BA"
   },
   {
    "name": "anh VĐ.Đạt",
    "female": false,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "presale:0"
+   "stack": "Manual Test"
   },
   {
    "name": "anh VH.Linh",
    "female": false,
    "unit": "DU35.1",
-   "stack": "Resource Manager",
-   "seat": "presale:1"
+   "stack": "Resource Manager"
   },
   {
    "name": "chị ĐN.Vân",
    "female": true,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "presale:2"
+   "stack": "BA"
   },
   {
    "name": "chị ĐT.Hiền",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Manual Test",
-   "seat": "presale:3"
+   "stack": "Manual Test"
   },
   {
    "name": "chị ĐT.Xuyến",
    "female": true,
    "unit": "DU35.1",
-   "stack": "QA Baseband",
-   "seat": "presale:4"
+   "stack": "QA Baseband"
   },
   {
    "name": "anh ĐV.Nam",
    "female": false,
    "unit": "DU35.1",
-   "stack": "BA",
-   "seat": "presale:5"
+   "stack": "BA"
   },
   {
    "name": "anh ĐVL.Tùng",
    "female": false,
    "unit": "DU35.1",
-   "stack": "QA Baseband",
-   "seat": "presale:6"
+   "stack": "QA Baseband"
   },
   {
    "name": "anh ĐV.Trung",
    "female": false,
    "unit": "DU35.1",
-   "stack": "QA Baseband",
-   "seat": "presale:7"
+   "stack": "QA Baseband"
   },
   {
    "name": "chị ĐC.Chi",
    "female": true,
    "unit": "DU35.1",
-   "stack": "Automation Tester",
-   "seat": "presale:8"
+   "stack": "Automation Tester"
   },
   {
    "name": "anh BN.Trang",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m3:0"
+   "stack": "NodeJS"
   },
   {
    "name": "anh CT.Anh",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m3:1"
+   "stack": "NodeJS"
   },
   {
    "name": "anh CC.Minh",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m3:2"
+   "stack": "NodeJS"
   },
   {
    "name": "anh HD.Thiện",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m3:3"
+   "stack": "NodeJS"
   },
   {
    "name": "anh HH.Nam",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:4"
+   "stack": "C++"
   },
   {
    "name": "anh HT.Thực",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m3:5"
+   "stack": "NodeJS"
   },
   {
    "name": "anh HV.Hoàng",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:6"
+   "stack": "C++"
   },
   {
    "name": "anh HĐ.Kiên",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:7"
+   "stack": "C++"
   },
   {
    "name": "anh HVH.Tâm",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Ruby",
-   "seat": "m3:8"
+   "stack": "Ruby"
   },
   {
    "name": "anh HA.Tuấn",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m3:9"
+   "stack": "NodeJS"
   },
   {
    "name": "anh HD.Thiên",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:10"
+   "stack": "C++"
   },
   {
    "name": "anh HH.Nam",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:11"
+   "stack": "C++"
   },
   {
    "name": "chị HT.Hiển",
    "female": true,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:12"
+   "stack": "C++"
   },
   {
    "name": "anh KĐ.Hải",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Java",
-   "seat": "m3:13"
+   "stack": "Java"
   },
   {
    "name": "anh LH.Long",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Golang",
-   "seat": "m3:14"
+   "stack": "Golang"
   },
   {
    "name": "anh LH.Minh",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:15"
+   "stack": "C++"
   },
   {
    "name": "anh LH.Hiếu",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:16"
+   "stack": "C++"
   },
   {
    "name": "anh LM.Quân",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Resource Manager",
-   "seat": "m3:17"
+   "stack": "Resource Manager"
   },
   {
    "name": "anh LQ.Nghĩa",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:18"
+   "stack": "C++"
   },
   {
    "name": "anh LT.Long",
    "female": false,
    "unit": "DU35.2",
-   "stack": "ReactJS",
-   "seat": "m3:19"
+   "stack": "ReactJS"
   },
   {
    "name": "anh LV.Huy",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Java",
-   "seat": "m3:20"
+   "stack": "Java"
   },
   {
    "name": "anh LX.Kỳ",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:21"
+   "stack": "C++"
   },
   {
    "name": "anh NBK.Tùng",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m3:22"
+   "stack": "C++"
   },
   {
    "name": "anh NH.Phước",
    "female": false,
    "unit": "DU35.2",
-   "stack": ".NET",
-   "seat": "m3:23"
+   "stack": ".NET"
   },
   {
    "name": "anh NH.Đức",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Baseband",
-   "seat": "m4:0"
+   "stack": "Baseband"
   },
   {
    "name": "anh NH.Trường",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m4:1"
+   "stack": "C++"
   },
   {
    "name": "anh NH.Phúc",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Golang",
-   "seat": "m4:2"
+   "stack": "Golang"
   },
   {
    "name": "anh NH.Lộc",
    "female": false,
    "unit": "DU35.2",
-   "stack": "FullStack",
-   "seat": "m4:3"
+   "stack": "FullStack"
   },
   {
    "name": "anh NH.Sơn",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m4:4"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NK.Hòa",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Golang",
-   "seat": "m4:5"
+   "stack": "Golang"
   },
   {
    "name": "anh NL.Tùng",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m4:6"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NM.Tiến",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Java",
-   "seat": "m4:7"
+   "stack": "Java"
   },
   {
    "name": "anh NM.Đạt",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m4:8"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NQ.Hoàng",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m4:9"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NQ.Anh",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m4:10"
+   "stack": "NodeJS"
   },
   {
    "name": "chị NT.Huyền",
    "female": true,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m4:11"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NT.Thuật",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m5:0"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NT.Dũng",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m5:1"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NV.Thịnh",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m5:2"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NV.Anh",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Java",
-   "seat": "m5:3"
+   "stack": "Java"
   },
   {
    "name": "anh NV.Hải",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m5:4"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NV.Hải",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m5:5"
+   "stack": "C++"
   },
   {
    "name": "anh NV.Thành",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Baseband",
-   "seat": "m5:6"
+   "stack": "Baseband"
   },
   {
    "name": "anh NX.Tuyền",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m5:7"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NĐ.Thuận",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m5:8"
+   "stack": "NodeJS"
   },
   {
    "name": "anh NĐ.Tiến",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C",
-   "seat": "m5:9"
+   "stack": "C"
   },
   {
    "name": "anh NQ.Minh",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m5:10"
+   "stack": "C++"
   },
   {
    "name": "anh PT.Tùng",
    "female": false,
    "unit": "DU35.2",
-   "stack": ".NET",
-   "seat": "m5:11"
+   "stack": ".NET"
   },
   {
    "name": "anh PM.Đức",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m5:12"
+   "stack": "NodeJS"
   },
   {
    "name": "anh PQ.Huy",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m5:13"
+   "stack": "C++"
   },
   {
    "name": "chị PT.Dân",
    "female": true,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m5:14"
+   "stack": "C++"
   },
   {
    "name": "chị PY.Nhi",
    "female": true,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m5:15"
+   "stack": "C++"
   },
   {
    "name": "anh TQ.Thái",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m5:16"
+   "stack": "C++"
   },
   {
    "name": "anh TQ.Khánh",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m5:17"
+   "stack": "C++"
   },
   {
    "name": "anh TQ.Toản",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "m5:18"
+   "stack": "C++"
   },
   {
    "name": "anh THH.Anh",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "m5:19"
+   "stack": "NodeJS"
   },
   {
    "name": "anh TH.Nam",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Baseband",
-   "seat": "m5:20"
+   "stack": "Baseband"
   },
   {
    "name": "anh TM.Nghĩa",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Golang",
-   "seat": "m5:21"
+   "stack": "Golang"
   },
   {
    "name": "anh TTH.Đạt",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Baseband",
-   "seat": "m5:22"
+   "stack": "Baseband"
   },
   {
    "name": "chị TTK.Chi",
    "female": true,
    "unit": "DU35.2",
-   "stack": "Golang",
-   "seat": "m5:23"
+   "stack": "Golang"
   },
   {
    "name": "anh TT.Kiên",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Java",
-   "seat": "presale:9"
+   "stack": "Java"
   },
   {
    "name": "anh TV.Hải",
    "female": false,
    "unit": "DU35.2",
-   "stack": "NodeJS",
-   "seat": "presale:10"
+   "stack": "NodeJS"
   },
   {
    "name": "anh TH.Phúc",
    "female": false,
    "unit": "DU35.2",
-   "stack": "Baseband",
-   "seat": "presale:11"
+   "stack": "Baseband"
   },
   {
    "name": "anh TQ.Hưng",
    "female": false,
    "unit": "DU35.2",
-   "stack": "FullStack",
-   "seat": "presale:12"
+   "stack": "FullStack"
   },
   {
    "name": "anh VM.Hiếu",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "presale:13"
+   "stack": "C++"
   },
   {
    "name": "anh VĐ.Chiến",
    "female": false,
    "unit": "DU35.2",
-   "stack": ".NET",
-   "seat": "presale:14"
+   "stack": ".NET"
   },
   {
    "name": "anh ĐT.Kiên",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "presale:15"
+   "stack": "C++"
   },
   {
    "name": "anh ĐM.Thái",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "stl:12"
+   "stack": "C++"
   },
   {
    "name": "anh ĐH.Vấn",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "stl:13"
+   "stack": "C++"
   },
   {
    "name": "anh ĐQ.Trường",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "stl:14"
+   "stack": "C++"
   },
   {
    "name": "anh ĐT.Tùng",
    "female": false,
    "unit": "DU35.2",
-   "stack": "C++",
-   "seat": "stl:15"
+   "stack": "C++"
   },
   {
    "name": "anh BT.Chung",
    "female": false,
    "unit": "DU35.3",
-   "stack": "ReactJS",
-   "seat": "sdax:0"
+   "stack": "ReactJS"
   },
   {
    "name": "anh BNT.Dũng",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Data Engineer",
-   "seat": "sdax:1"
+   "stack": "Data Engineer"
   },
   {
    "name": "anh DX.Khang",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Data Engineer",
-   "seat": "sdax:2"
+   "stack": "Data Engineer"
   },
   {
    "name": "anh DQ.Trường",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Flutter",
-   "seat": "sdax:3"
+   "stack": "Flutter"
   },
   {
    "name": "anh HV.Thực",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Java",
-   "seat": "sdax:4"
+   "stack": "Java"
   },
   {
    "name": "anh HT.Tuấn",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Cyber Security",
-   "seat": "sdax:5"
+   "stack": "Cyber Security"
   },
   {
    "name": "anh LH.Sơn",
    "female": false,
    "unit": "DU35.3",
-   "stack": "ReactJS",
-   "seat": "sdax:6"
+   "stack": "ReactJS"
   },
   {
    "name": "anh LT.Chỉnh",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Flutter",
-   "seat": "sdax:7"
+   "stack": "Flutter"
   },
   {
    "name": "anh NH.Linh",
    "female": false,
    "unit": "DU35.3",
-   "stack": "ReactJS",
-   "seat": "sdax:8"
+   "stack": "ReactJS"
   },
   {
    "name": "anh NM.Đức",
    "female": false,
    "unit": "DU35.3",
-   "stack": "ReactJS",
-   "seat": "sdax:9"
+   "stack": "ReactJS"
   },
   {
    "name": "anh NN.Huy",
    "female": false,
    "unit": "DU35.3",
-   "stack": "ReactJS",
-   "seat": "sdax:10"
+   "stack": "ReactJS"
   },
   {
    "name": "anh NQ.Khánh",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Data Engineer",
-   "seat": "sdax:11"
+   "stack": "Data Engineer"
   },
   {
    "name": "chị NT.Nga",
    "female": true,
    "unit": "DU35.3",
-   "stack": "Data annotation engineer",
-   "seat": "sdax:12"
+   "stack": "Data annotation engineer"
   },
   {
    "name": "anh NT.Phan",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Python",
-   "seat": "sdax:13"
+   "stack": "Python"
   },
   {
    "name": "anh NT.Đạt",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Flutter",
-   "seat": "sdax:14"
+   "stack": "Flutter"
   },
   {
    "name": "anh NVM.Hoàng",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Flutter",
-   "seat": "sdax:15"
+   "stack": "Flutter"
   },
   {
    "name": "anh NVM.Tuấn",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Flutter",
-   "seat": "sdax:16"
+   "stack": "Flutter"
   },
   {
    "name": "anh NV.Tín",
    "female": false,
    "unit": "DU35.3",
-   "stack": "ReactJS",
-   "seat": "sdax:17"
+   "stack": "ReactJS"
   },
   {
    "name": "anh NX.Hậu",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Resource Manager",
-   "seat": "sdax:18"
+   "stack": "Resource Manager"
   },
   {
    "name": "anh NĐ.Khoa",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Python",
-   "seat": "sdax:19"
+   "stack": "Python"
   },
   {
    "name": "anh NĐ.Phong",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Python",
-   "seat": "sdax:20"
+   "stack": "Python"
   },
   {
    "name": "chị NT.Nhi",
    "female": true,
    "unit": "DU35.3",
-   "stack": "Flutter",
-   "seat": "sdax:21"
+   "stack": "Flutter"
   },
   {
    "name": "anh PN.Huân",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Data Engineer",
-   "seat": "stl:0"
+   "stack": "Data Engineer"
   },
   {
    "name": "anh PQ.Huy",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Data Analyst",
-   "seat": "stl:1"
+   "stack": "Data Analyst"
   },
   {
    "name": "anh PV.Được",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Angular",
-   "seat": "stl:2"
+   "stack": "Angular"
   },
   {
    "name": "anh TN.Quang",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Python",
-   "seat": "stl:3"
+   "stack": "Python"
   },
   {
    "name": "anh TT.Hiếu",
    "female": false,
    "unit": "DU35.3",
-   "stack": "ReactJS",
-   "seat": "stl:4"
+   "stack": "ReactJS"
   },
   {
    "name": "chị TVP.Linh",
    "female": true,
    "unit": "DU35.3",
-   "stack": "Data annotation engineer",
-   "seat": "stl:5"
+   "stack": "Data annotation engineer"
   },
   {
    "name": "chị VQ.Mai",
    "female": true,
    "unit": "DU35.3",
-   "stack": "Team Leader",
-   "seat": "stl:6"
+   "stack": "Team Leader"
   },
   {
    "name": "anh VM.Hiếu",
    "female": false,
    "unit": "DU35.3",
-   "stack": "ReactJS",
-   "seat": "stl:7"
+   "stack": "ReactJS"
   },
   {
    "name": "anh VM.Đức",
    "female": false,
    "unit": "DU35.3",
-   "stack": "ReactJS",
-   "seat": "stl:8"
+   "stack": "ReactJS"
   },
   {
    "name": "anh VQ.Việt",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Flutter",
-   "seat": "stl:9"
+   "stack": "Flutter"
   },
   {
    "name": "anh ĐHT.Tùng",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Data Analyst",
-   "seat": "stl:10"
+   "stack": "Data Analyst"
   },
   {
    "name": "anh ĐQM.Hiếu",
    "female": false,
    "unit": "DU35.3",
-   "stack": "Data Engineer",
-   "seat": "stl:11"
+   "stack": "Data Engineer"
   },
   {
    "name": "anh HV.Đức",
    "female": false,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br1:0"
+   "stack": "PM"
   },
   {
    "name": "chị LM.Thảo",
    "female": true,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br1:1"
+   "stack": "PM"
   },
   {
    "name": "anh NM.Thịnh",
    "female": false,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br1:2"
+   "stack": "PM"
   },
   {
    "name": "anh NM.Trường",
    "female": false,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br1:3"
+   "stack": "PM"
   },
   {
    "name": "anh NT.Tùng",
    "female": false,
    "unit": "DU35.4",
-   "stack": "BA",
-   "seat": "br1:4"
+   "stack": "BA"
   },
   {
    "name": "chị NT.Doan",
    "female": true,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br1:5"
+   "stack": "PM"
   },
   {
    "name": "anh NT.Nam",
    "female": false,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br1:6"
+   "stack": "PM"
   },
   {
    "name": "anh PV.Anh",
    "female": false,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br1:7"
+   "stack": "PM"
   },
   {
    "name": "anh TTB.Hoàng",
    "female": false,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br1:8"
+   "stack": "PM"
   },
   {
    "name": "chị TT.Nhụy",
    "female": true,
    "unit": "DU35.4",
-   "stack": "Senior Delivery Manager",
-   "seat": "br1:9"
+   "stack": "Senior Delivery Manager"
   },
   {
    "name": "chị TTT.Tiên",
    "female": true,
    "unit": "DU35.4",
-   "stack": "PO",
-   "seat": "br2:0"
+   "stack": "PO"
   },
   {
    "name": "anh ĐN.Chiến",
    "female": false,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br2:1"
+   "stack": "PM"
   },
   {
    "name": "chị ĐTM.Châu",
    "female": true,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br2:2"
+   "stack": "PM"
   },
   {
    "name": "chị ĐN.Mai",
    "female": true,
    "unit": "DU35.4",
-   "stack": "PM",
-   "seat": "br2:3"
+   "stack": "PM"
   }
  ]
 }

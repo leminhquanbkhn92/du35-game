@@ -959,5 +959,35 @@
       "text": "Thank you for supporting us over the weekend during the go-live."
     }
   ],
-  "_note_kudos": "kudos: thay bằng lời khen thật (đã ẩn tên khách hàng) trên kệ ảnh khen ngợi."
+  "_note_kudos": "kudos: thay bằng lời khen thật (đã ẩn tên khách hàng) trên kệ ảnh khen ngợi.",
+  "seating": {
+    "_note": "Quy tắc xếp chỗ tự động: QA và BA ngồi khu riêng, còn lại theo bộ phận. Khu: erc, presale, qa, du35, m2, m3, m4, m5, sdax, stl, br1, br2, ba",
+    "qaStacks": [
+      "Manual Test",
+      "Automation Tester",
+      "QA Baseband"
+    ],
+    "unitAreas": {
+      "DU35.1": [
+        "du35",
+        "m2",
+        "erc",
+        "presale"
+      ],
+      "DU35.2": [
+        "m3",
+        "m4",
+        "m5",
+        "presale"
+      ],
+      "DU35.3": [
+        "sdax",
+        "stl"
+      ],
+      "DU35.4": [
+        "br1",
+        "br2"
+      ]
+    }
+  }
 }

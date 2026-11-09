@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { scene, camera, renderer, labelRenderer, label } from './stage.js';
+import { scene, camera, renderer, labelRenderer, label, sun } from './stage.js';
 import { buildOffice, seats, areaSeats, spots, rooms, collide, findPath, spawn, BOUNDS, mergeStatic } from './office.js';
 import { makeCharacter, makeSeatedStatic, PASTEL } from './character.js';
 import { $, renderStats, chips, toast, dialog, openModal, closeModal, isModalOpen, head, esc, waitClick } from './ui.js';
@@ -68,9 +68,32 @@ const frand = () => (fseed = (fseed * 16807) % 2147483647) / 2147483647;
 // Nhân sự thật (data/staff.json – bản nội bộ). Không có file thì dùng nhân vật vô danh.
 const STAFF = await fetch('data/staff.json').then((r) => (r.ok ? r.json() : { staff: [] })).catch(() => ({ staff: [] }));
 const staffList = STAFF.staff || [];
-const seated = staffList.filter((s) => s.seat && seatFor(s.seat) && !usedSeats.has(seatFor(s.seat)));
+// Xếp chỗ tự động lúc chạy: ghế ghi sẵn trong staff.json ("seat") → nhóm QA/BA → theo bộ phận → ghế trống bất kỳ
+function assignSeats(list) {
+  const R = C.seating || {};
+  const qaStacks = R.qaStacks || ['Manual Test', 'Automation Tester', 'QA Baseband'];
+  const unitAreas = R.unitAreas || { 'DU35.1': ['du35', 'm2', 'erc', 'presale'], 'DU35.2': ['m3', 'm4', 'm5', 'presale'], 'DU35.3': ['sdax', 'stl'], 'DU35.4': ['br1', 'br2'] };
+  const npcNames = new Set(Object.values(C.npcs).map((n) => n.name).filter(Boolean));
+  const taken = new Set(usedSeats);
+  const freeIn = (a) => (areaSeats[a] || []).filter((id) => !taken.has(id));
+  const out = [];
+  const people = list.filter((s) => !npcNames.has(s.name));
+  const give = (s, id) => { taken.add(id); out.push({ person: s, seat: id }); s._seated = true; };
+  for (const s of people) { const id = s.seat && seatFor(s.seat); if (id && !taken.has(id)) give(s, id); }
+  const fill = (area, pred) => { for (const s of people) { if (s._seated || !pred(s)) continue; const f = freeIn(area); if (!f.length) return; give(s, f[0]); } };
+  fill('qa', (s) => qaStacks.includes(s.stack));
+  fill('ba', (s) => s.stack === 'BA');
+  for (const [u, areas] of Object.entries(unitAreas)) for (const a of areas) fill(a, (s) => s.unit === u);
+  const memberAreas = Object.keys(areaSeats).filter((a) => !a.startsWith('mgr_') && a !== 'reception');
+  for (const a of memberAreas) fill(a, () => true);
+  const left = people.filter((s) => !s._seated);
+  if (left.length) console.warn(`Không đủ ghế cho ${left.length} người`, left.map((s) => s.name));
+  return out;
+}
+const seatedPairs = staffList.length ? assignSeats(staffList) : [];
+const seated = seatedPairs.map((p) => p.person);
 const FILLER_SEATS = staffList.length
-  ? seated.map((s) => seatFor(s.seat))
+  ? seatedPairs.map((p) => p.seat)
   : Object.keys(seats).filter((id) => !usedSeats.has(id) && id !== 'reception' && frand() < (C.fillRate ?? 0.6));
 const palette = PASTEL;
 const fillers = FILLER_SEATS.map((sid, i) => {
@@ -200,6 +223,9 @@ function updateCamera(dt, snap = false) {
   const ahead = cam.dist * 0.18;
   camTarget.lerp(new THREE.Vector3(p.x - Math.sin(cam.yaw) * ahead, 1, p.z - Math.cos(cam.yaw) * ahead), snap ? 1 : Math.min(1, dt * 8));
   camera.lookAt(camTarget);
+  // mặt trời (bóng đổ) đi theo vùng camera đang nhìn vì văn phòng rất rộng
+  sun.position.set(camTarget.x - 10, 22, camTarget.z + 12);
+  sun.target.position.set(camTarget.x, 0, camTarget.z);
 }
 
 function updatePlayer(dt) {

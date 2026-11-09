@@ -65,8 +65,8 @@ Toàn bộ câu thoại, câu hỏi, tình huống nằm trong **`data/content.j
 ### Danh sách nhân sự (`data/staff.json`) – BẢN NỘI BỘ
 
 - Tạo từ file "Danh sách nhân sự - DU35", chỉ giữ **tên, giới tính, bộ phận, techstack chính** (không có SĐT, email, HR ID, level).
-- `seat` là chỗ ngồi trong game (`khu:số`), đang xếp tạm theo bộ phận/techstack: QA → khu QA, BA → khu BA, DU35.1 → khu DU35/Member/Phòng dự án, DU35.2 → Member giữa/Pre-sale, DU35.3 → 2 team dự án, DU35.4 → Member phía dưới. Sửa lại cho đúng chỗ ngồi thật.
-- Văn phòng có ~200 chỗ (dãy bàn đôi), **cả 183 người đều ngồi tại chỗ** (181 nhân viên + Giám đốc và Manager là NPC). Tên hiện khi đi lại gần. Toàn bộ danh sách cũng có trong **Bảng thành viên** (kiosk gần lối vào, có ô tìm kiếm).
+- Chỗ ngồi được **xếp tự động khi chạy** theo `seating` trong `content.json` (QA → khu QA, BA → khu BA, còn lại theo bộ phận). Muốn cố định ai ngồi đâu, thêm `"seat": "khu:số"` cho người đó trong `staff.json`.
+- Văn phòng rộng ~84 × 21 m với ~190 chỗ (dãy bàn đôi, lối đi rộng), **cả 183 người đều ngồi tại chỗ** (181 nhân viên + Giám đốc và Manager là NPC). Tên hiện khi đi lại gần. Toàn bộ danh sách cũng có trong **Bảng thành viên** (kiosk gần lối vào, có ô tìm kiếm).
 - Để game mượt, đồ đạc và nhân vật ngồi được gộp thành ít mesh (~120 draw call); các nhân vật ngồi tĩnh, chỉ NPC cốt truyện có hoạt ảnh.
 - **Xoá file này trước khi phát hành công khai** (cho tuyển dụng): game sẽ tự dùng nhân vật vô danh.
 
