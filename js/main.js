@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { scene, camera, renderer, labelRenderer, label } from './stage.js';
 import { buildOffice, seats, areaSeats, spots, rooms, collide, findPath, spawn, BOUNDS, mergeStatic } from './office.js';
-import { makeCharacter, makeSeatedStatic } from './character.js';
+import { makeCharacter, makeSeatedStatic, PASTEL } from './character.js';
 import { $, renderStats, chips, toast, dialog, openModal, closeModal, isModalOpen, head, esc, waitClick } from './ui.js';
 import * as MG from './minigames.js';
 
@@ -9,7 +9,15 @@ const C = await fetch('data/content.json').then((r) => r.json());
 const SAVE_KEY = 'du35-sprint-v1';
 const WEEKDAYS = ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu'];
 const FILLER_LINES = ['Đang chạy deadline, nói chuyện sau nhé! 😅', 'Chào bạn mới! Mình ở team bên cạnh, cần gì cứ hỏi nha.', 'Trưa nay team mình đi ăn bún chả, đi cùng không?', 'Máy pha cà phê ở góc cà phê ngon lắm đó.', 'Khách Mỹ vừa approve PR của mình, vui ghê!'];
-const ROLE_SHIRT = { dev: '#ff7a1a', qa: '#14a37f', ba: '#7a4dff' };
+const ROLE_SHIRT = { dev: '#ff9f1c', qa: '#06d6a0', ba: '#b388ff' };
+// kiểu tóc & phụ kiện riêng cho nhân vật có tên (có thể ghi đè bằng "look" trong content.json)
+const NPC_LOOK = {
+  hr: { hairStyle: 'bun', acc: 'bow' }, pm: { hairStyle: 'short', acc: 'glasses' }, tl: { hairStyle: 'spiky', acc: 'headphones' },
+  qa: { hairStyle: 'pony', acc: 'none' }, dev: { hairStyle: 'messy', acc: 'cap' }, ba: { hairStyle: 'twin', acc: 'none' },
+  director: { hairStyle: 'short', acc: 'glasses' }, sdm: { hairStyle: 'bob', acc: 'none' }, presale: { hairStyle: 'curly', acc: 'none' },
+  qam: { hairStyle: 'long', acc: 'glasses' }, mgr2: { hairStyle: 'bun', acc: 'none' },
+};
+const EMOTES = ['☕', '💡', '😂', '🎵', '🔥', '🐛', '✅', '🚀', '😴', '🍜', '💪', '🎉', '🤔', '❤️', '🧋'];
 const ALL_TEAM = ['pm', 'tl', 'qa', 'dev', 'ba'];
 const GATHER = { standup: ALL_TEAM, poker: ALL_TEAM, retro: ALL_TEAM, birthday: ALL_TEAM, client: ['pm', 'ba'] };
 
@@ -45,9 +53,9 @@ function placeAtSeat(n) {
   n.loc = 'seat'; n.path = []; n.face = null;
 }
 for (const [id, d] of Object.entries(C.npcs)) {
-  const ch = makeCharacter({ shirt: d.color, hair: d.hair, female: d.female, pants: d.female ? '#3b4659' : '#2d3a4f' });
+  const ch = makeCharacter({ shirt: d.color, hair: d.hair, female: d.female, seed: id.length * 977 + id.charCodeAt(0) * 31, ...(NPC_LOOK[id] || {}), ...(d.look || {}) });
   const lb = label(d.name ? `${d.name} · ${d.role}` : d.role);
-  lb.position.y = 2.15;
+  lb.position.y = 2.0;
   ch.root.add(lb);
   scene.add(ch.root);
   const n = { id, d, ch, seat: seatFor(d.spot), path: [], speed: 0, loc: 'seat', chain: Promise.resolve() };
@@ -64,16 +72,16 @@ const seated = staffList.filter((s) => s.seat && seatFor(s.seat) && !usedSeats.h
 const FILLER_SEATS = staffList.length
   ? seated.map((s) => seatFor(s.seat))
   : Object.keys(seats).filter((id) => !usedSeats.has(id) && id !== 'reception' && frand() < (C.fillRate ?? 0.6));
-const palette = ['#5b6b85', '#c94f4f', '#3c8dbc', '#8e6cc4', '#d98b2b', '#2f9e78', '#b5577e', '#4b5d73', '#6a8f3a'];
+const palette = PASTEL;
 const fillers = FILLER_SEATS.map((sid, i) => {
   const person = staffList.length ? seated[i] : null;
   const female = person ? person.female : i % 3 === 1;
-  const ch = makeSeatedStatic({ shirt: palette[Math.floor(frand() * palette.length)], hair: ['#1a1a1a', '#3a2416', '#222'][i % 3], female, pants: female ? '#3b4659' : '#2d3a4f' });
+  const ch = makeSeatedStatic({ shirt: palette[Math.floor(frand() * palette.length)], female, seed: 1000 + i * 7919 });
   scene.add(ch.root);
   const n = { id: 'f' + i, ch, seat: sid, path: [], filler: true, person };
   if (person) {
     n.label = label(person.name);
-    n.label.position.y = 1.75;
+    n.label.position.y = 1.9;
     n.label.visible = false;
     ch.root.add(n.label);
   }
@@ -149,9 +157,9 @@ function turnTo(obj, target, k) {
 let player = null;
 function makePlayer() {
   if (player) scene.remove(player.ch.root);
-  const ch = makeCharacter({ shirt: ROLE_SHIRT[S.role] || '#1f5eff', hair: '#1a1a1a' });
+  const ch = makeCharacter({ shirt: ROLE_SHIRT[S.role] || '#4cc9f0', hair: '#2b1d14', hairStyle: 'short', acc: 'leaf', seed: 42 }); // mầm lá = tân binh 🌱
   const lb = label(`${S.name} (bạn)`, 'npc-label me');
-  lb.position.y = 2.15;
+  lb.position.y = 2.0;
   ch.root.add(lb);
   scene.add(ch.root);
   player = { ch, vel: 0 };
@@ -474,12 +482,26 @@ $('#btn-new').addEventListener('click', () => {
 
 // ---------- loop ----------
 const clock = new THREE.Clock();
-let t = 0;
+let t = 0, emoteTimer = 1;
 function frame() {
   const dt = Math.min(clock.getDelta(), 0.05);
   t += dt;
   for (const n of Object.values(npcs)) updateNpc(n, dt);
   for (const n of fillers) n.ch.update(dt, 0);
+  // thỉnh thoảng một đồng nghiệp gần đó bật biểu tượng cảm xúc
+  emoteTimer -= dt;
+  if (player && emoteTimer <= 0 && fillers.length) {
+    emoteTimer = 0.9 + Math.random() * 1.2;
+    const pp = player.ch.root.position;
+    const near = fillers.filter((n) => Math.hypot(n.ch.root.position.x - pp.x, n.ch.root.position.z - pp.z) < 14);
+    if (near.length) {
+      const n = near[Math.floor(Math.random() * near.length)];
+      const e = label(EMOTES[Math.floor(Math.random() * EMOTES.length)], 'emote');
+      e.position.y = 1.75;
+      n.ch.root.add(e);
+      setTimeout(() => { n.ch.root.remove(e); e.element.remove(); }, 2400);
+    }
+  }
   // chỉ hiện tên đồng nghiệp ở gần để màn hình không bị rối
   if (player) {
     const pp = player.ch.root.position;

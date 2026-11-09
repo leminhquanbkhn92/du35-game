@@ -13,6 +13,18 @@ python -m http.server 8735
 
 Mở trình duyệt: http://localhost:8735
 
+## Bản online (GitHub Pages)
+
+- Link: https://leminhquanbkhn92.github.io/du35-game/
+- Bản online được tạo từ thư mục này bằng script, **tên nhân viên được viết tắt** (ví dụ: Nguyễn Văn An → anh NV.An). Thư mục `du35-game` (tên đầy đủ) không bao giờ được đẩy lên GitHub.
+- Cập nhật bản online sau khi sửa game:
+
+```bash
+cd "D:/AI Project/Game AI"
+python -I tools/build_public.py
+cd du35-deploy && git add -A && git commit -m "Cập nhật game" && git push
+```
+
 ## Cách chơi
 
 - **WASD / phím mũi tên**: di chuyển · **Shift**: chạy · **E**: tương tác

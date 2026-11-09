@@ -108,3 +108,14 @@ pre.code .n { display: inline-block; width: 26px; color: #6b7a99; user-select: n
 .role-pick button small { display: block; font-weight: 400; color: var(--muted); font-size: 11px; margin-top: 3px; }
 .role-pick button.on { border-color: var(--brand); background: #eef3ff; }
 .start-actions { display: flex; flex-direction: column; gap: 8px; }
+
+/* Biểu tượng cảm xúc bay lên đầu nhân vật */
+.emote { font-size: 26px; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,.35)); animation: emote-pop 2.4s ease-out forwards; }
+@keyframes emote-pop {
+  0% { transform: translateY(8px) scale(.3); opacity: 0; }
+  15% { transform: translateY(0) scale(1.15); opacity: 1; }
+  25% { transform: scale(1); }
+  80% { opacity: 1; }
+  100% { transform: translateY(-26px) scale(.9); opacity: 0; }
+}
+.npc-label { border: 1.5px solid rgba(255,255,255,.25); }
