@@ -129,9 +129,49 @@ function bench(area, cx, cz, len, vertical, pitch = 1.25) {
   }
 }
 // bàn quản lý đơn, người ngồi quay mặt về phía nam (về phía team)
+// chậu cây mini để bàn: lá xanh, xương rồng, sen đá
+const POT_COLORS = ['#e07a5f', '#f2cc8f', '#81b29a', '#f4a6c1', '#a0c4ff', '#ffffff'];
+function deskPlant(kind, x, z, potColor) {
+  const g = new THREE.Group();
+  g.add(cyl(0.065, 0.05, 0.1, potColor, 0, 0.05, 0, 12));
+  g.add(cyl(0.058, 0.058, 0.012, '#5b4636', 0, 0.098, 0, 12));
+  if (kind === 'cactus') {
+    const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.035, 0.09, 4, 8), mat('#3f9a5b'));
+    body.position.y = 0.17; body.castShadow = true; g.add(body);
+    const arm = new THREE.Mesh(new THREE.CapsuleGeometry(0.018, 0.04, 4, 6), mat('#3f9a5b'));
+    arm.position.set(0.045, 0.17, 0); arm.rotation.z = -0.5; g.add(arm);
+    const flower = new THREE.Mesh(new THREE.SphereGeometry(0.018, 8, 6), mat('#ff6fa3'));
+    flower.position.y = 0.245; g.add(flower);
+  } else if (kind === 'succulent') {
+    for (let i = 0; i < 7; i++) {
+      const a = (i / 7) * Math.PI * 2;
+      const l = new THREE.Mesh(new THREE.ConeGeometry(0.022, 0.07, 5), mat(i % 2 ? '#8fcf9b' : '#6dbb7e'));
+      l.position.set(Math.cos(a) * 0.03, 0.125, Math.sin(a) * 0.03);
+      l.rotation.set(Math.sin(a) * 0.9, 0, -Math.cos(a) * 0.9);
+      g.add(l);
+    }
+    const c = new THREE.Mesh(new THREE.SphereGeometry(0.022, 8, 6), mat('#a8dcb0'));
+    c.position.y = 0.12; g.add(c);
+  } else {
+    for (let i = 0; i < 5; i++) {
+      const a = (i / 5) * Math.PI * 2;
+      const l = new THREE.Mesh(new THREE.IcosahedronGeometry(0.045, 0), mat(i % 2 ? '#4fb06a' : '#3f9a5b'));
+      l.position.set(Math.cos(a) * 0.035, 0.16 + (i % 2) * 0.04, Math.sin(a) * 0.035);
+      l.castShadow = true;
+      g.add(l);
+    }
+  }
+  g.position.set(x, 0.77, z);
+  scene.add(g);
+}
+let mgrN = 0;
 function managerDesk(key, x, z, title) {
   deskTop(x, z, 1.5, 0.75);
   addSeat('mgr_' + key, x, z - 0.83, 0, 'mgr_' + key);
+  const kinds = ['leafy', 'succulent', 'cactus'];
+  const i = mgrN++;
+  deskPlant(kinds[i % 3], x + 0.56, z - 0.16, POT_COLORS[i % POT_COLORS.length]);
+  deskPlant(kinds[(i + 1) % 3], x - 0.6, z + 0.12, POT_COLORS[(i + 3) % POT_COLORS.length]);
   if (title) {
     const s = signMesh(title, 0.9, 0.2, { bg: '#0f1a2e', size: 0.5 });
     s.position.set(x, 0.79, z + 0.2); s.rotation.x = -Math.PI / 2.6; scene.add(s);

@@ -871,6 +871,7 @@ if (location.search.includes('debug')) {
     npcs, step: () => curStep(), mergeInfo, fillers: () => fillers.length,
     bench() { const t0 = performance.now(); for (let i = 0; i < 20; i++) renderer.render(scene, camera); renderer.getContext().finish(); return { msPerFrame: ((performance.now() - t0) / 20).toFixed(2), calls: renderer.info.render.calls, tris: renderer.info.render.triangles }; },
     ff(sec) { for (let i = 0; i < sec * 30; i++) { for (const n of Object.values(npcs)) updateNpc(n, 1 / 30); ambient.update(1 / 30); updateActions(1 / 30); } },
+    snap() { updateCamera(0, true); renderer.render(scene, camera); labelRenderer.render(scene, camera); },
     act: { doPunch, doShoot, toggleWeapon, jump, startReload, ACT, get player() { return player; } },
     ambient, managerTalk: (i) => managerTalk(fillers[i]), showReport, fillerList: fillers,
   };
