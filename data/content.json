@@ -1,0 +1,963 @@
+{
+  "_note": "Toàn bộ nội dung game nằm ở file này. Sửa tên, câu thoại, câu hỏi cho đúng thực tế DU35. Không đưa tên khách hàng / dự án thật vào.",
+  "careerUrl": "#",
+  "roles": {
+    "dev": {
+      "name": "Developer",
+      "desc": "Code, fix bug",
+      "stats": {
+        "skill": 40
+      }
+    },
+    "qa": {
+      "name": "QA / Tester",
+      "desc": "Test, tìm bug",
+      "stats": {
+        "skill": 35,
+        "client": 55
+      }
+    },
+    "ba": {
+      "name": "BA",
+      "desc": "Làm việc với khách",
+      "stats": {
+        "skill": 30,
+        "client": 60
+      }
+    }
+  },
+  "startStats": {
+    "energy": 80,
+    "skill": 35,
+    "team": 40,
+    "client": 50,
+    "progress": 0
+  },
+  "npcs": {
+    "hr": {
+      "name": "Chị Lan",
+      "role": "HR",
+      "color": "#e85d75",
+      "hair": "#2b1d14",
+      "female": true,
+      "spot": "reception",
+      "idle": [
+        "Chào em! Có gì thắc mắc về chính sách cứ hỏi chị nhé.",
+        "Nhớ log timesheet trước 6 giờ chiều mỗi ngày nha."
+      ]
+    },
+    "pm": {
+      "name": "Anh Minh",
+      "role": "PM",
+      "color": "#1f5eff",
+      "hair": "#1a1a1a",
+      "spot": "m2:0",
+      "idle": [
+        "Sprint này mình cam kết với khách 34 point, cố lên!",
+        "Có blocker thì báo sớm, đừng ôm một mình nhé."
+      ]
+    },
+    "tl": {
+      "name": "Anh Hùng",
+      "role": "Tech Lead",
+      "color": "#2d3a4f",
+      "hair": "#111111",
+      "spot": "m2:1",
+      "idle": [
+        "Code xong nhớ tự review lại một lượt trước khi tạo PR.",
+        "Unit test không phải để cho có đâu nha."
+      ]
+    },
+    "qa": {
+      "name": "Chị Thảo",
+      "role": "QA Lead",
+      "color": "#14a37f",
+      "hair": "#4a2a17",
+      "female": true,
+      "spot": "qa:0",
+      "idle": [
+        "Bug nào cũng phải có step to reproduce rõ ràng.",
+        "Em thử test trên Safari chưa? Khách Úc dùng Mac nhiều lắm."
+      ]
+    },
+    "dev": {
+      "name": "Tuấn",
+      "role": "Developer",
+      "color": "#ff7a1a",
+      "hair": "#222222",
+      "spot": "du35:2",
+      "idle": [
+        "Chiều nay đi uống trà sữa không?",
+        "Hôm qua anh debug đến 9 giờ tối vì quên một dấu phẩy..."
+      ]
+    },
+    "ba": {
+      "name": "Chị Mai",
+      "role": "BA",
+      "color": "#7a4dff",
+      "hair": "#3a2416",
+      "female": true,
+      "spot": "ba:0",
+      "idle": [
+        "Khách Singapore thích tài liệu ngắn gọn, có bullet point.",
+        "Requirement chưa rõ thì hỏi lại, đừng đoán."
+      ]
+    },
+    "director": {
+      "name": "anh TM.Duy",
+      "role": "Giám đốc",
+      "color": "#0f1a2e",
+      "hair": "#111111",
+      "spot": "mgr_director:0",
+      "idle": [
+        "Có khó khăn gì cứ mạnh dạn chia sẻ với anh/chị nhé.",
+        "Khách hàng đánh giá cao team mình vì phản hồi nhanh và chủ động."
+      ]
+    },
+    "sdm": {
+      "name": "chị TT.Nhuy",
+      "role": "SDM",
+      "color": "#b5577e",
+      "hair": "#2b1d14",
+      "female": true,
+      "spot": "mgr_sdm:0",
+      "idle": [
+        "Chất lượng delivery là uy tín của cả DU.",
+        "Mỗi tháng mình đều review sức khoẻ các dự án, em yên tâm."
+      ]
+    },
+    "presale": {
+      "name": "anh TT.Duệ",
+      "role": "Pre-sale",
+      "color": "#3c8dbc",
+      "hair": "#1a1a1a",
+      "spot": "mgr_presale:0",
+      "idle": [
+        "Bên anh/chị đang làm proposal cho một khách hàng mới ở Úc đó.",
+        "Dự án mới thường bắt đầu từ một buổi demo nhỏ."
+      ]
+    },
+    "qam": {
+      "name": "chị NT.Ngân",
+      "role": "QA Manager",
+      "color": "#2f9e78",
+      "hair": "#3a2416",
+      "female": true,
+      "spot": "mgr_qa:0",
+      "idle": [
+        "Quality is not an act, it is a habit!",
+        "Test case tốt là test case ai đọc cũng chạy lại được."
+      ]
+    },
+    "mgr2": {
+      "name": "chị HTT.Trang",
+      "role": "Manager",
+      "color": "#8e6cc4",
+      "hair": "#3a2416",
+      "female": true,
+      "spot": "mgr_manager2:0",
+      "idle": [
+        "Chào em! Tuần đầu thấy thế nào?",
+        "Nhớ tham gia các buổi sharing nội bộ nhé, bổ ích lắm."
+      ]
+    }
+  },
+  "days": [
+    {
+      "title": "Ngày đầu tiên",
+      "intro": "8:30 sáng thứ Hai. Hôm nay là ngày đầu tiên của bạn ở DU35. Hãy đến quầy lễ tân gặp HR trước nhé!",
+      "steps": [
+        {
+          "type": "quiz",
+          "target": "hr",
+          "label": "Gặp chị Lan (HR) ở quầy lễ tân để làm thủ tục",
+          "ref": "onboarding",
+          "time": "09:00"
+        },
+        {
+          "type": "talk",
+          "target": "director",
+          "label": "Chào Giám đốc ở bàn phía trên khu member",
+          "ref": "director_welcome",
+          "time": "09:15"
+        },
+        {
+          "type": "talk",
+          "target": "pm",
+          "label": "Chào anh Minh (PM) để được giới thiệu dự án",
+          "ref": "pm_welcome",
+          "time": "09:30"
+        },
+        {
+          "type": "standup",
+          "target": "room_1",
+          "label": "Dự Daily Stand-up ở Meeting room 1",
+          "ref": 0,
+          "time": "10:00"
+        },
+        {
+          "type": "bugfix",
+          "target": "my_desk",
+          "label": "Về chỗ ngồi, làm task đầu tiên",
+          "ref": 0,
+          "time": "15:00"
+        },
+        {
+          "type": "talk",
+          "target": "dev",
+          "label": "Hỏi Tuấn cách tạo Pull Request",
+          "ref": "dev_pr",
+          "time": "17:00"
+        },
+        {
+          "type": "leave",
+          "target": "exit",
+          "label": "Log timesheet và ra về ở cửa chính",
+          "time": "18:00"
+        }
+      ]
+    },
+    {
+      "title": "Sprint Planning",
+      "intro": "Thứ Ba. Hôm nay team lên kế hoạch cho sprint mới cùng nhau.",
+      "steps": [
+        {
+          "type": "standup",
+          "target": "room_1",
+          "label": "Daily Stand-up ở Meeting room 1",
+          "ref": 1,
+          "time": "09:15"
+        },
+        {
+          "type": "poker",
+          "target": "room_1",
+          "label": "Sprint Planning ở Meeting room 1",
+          "ref": 0,
+          "time": "11:30"
+        },
+        {
+          "type": "bugfix",
+          "target": "my_desk",
+          "label": "Làm task ở chỗ ngồi",
+          "ref": 1,
+          "time": "16:30"
+        },
+        {
+          "type": "leave",
+          "target": "exit",
+          "label": "Ra về",
+          "time": "18:00"
+        }
+      ]
+    },
+    {
+      "title": "Gặp khách hàng",
+      "intro": "Thứ Tư. Có buổi call với khách hàng Úc lúc 10 giờ sáng (tức 2 giờ chiều ở Sydney).",
+      "steps": [
+        {
+          "type": "standup",
+          "target": "room_1",
+          "label": "Daily Stand-up ở Meeting room 1",
+          "ref": 2,
+          "time": "09:15"
+        },
+        {
+          "type": "client",
+          "target": "room_3",
+          "label": "Call với khách hàng Úc ở Meeting room 3",
+          "ref": 0,
+          "time": "11:00"
+        },
+        {
+          "type": "event",
+          "target": "my_desk",
+          "label": "Về chỗ ngồi tiếp tục làm việc",
+          "ref": "prod_bug",
+          "time": "16:00"
+        },
+        {
+          "type": "leave",
+          "target": "exit",
+          "label": "Ra về",
+          "time": "18:30"
+        }
+      ]
+    },
+    {
+      "title": "Code Review",
+      "intro": "Thứ Năm. Hôm nay có sinh nhật một thành viên trong team!",
+      "steps": [
+        {
+          "type": "standup",
+          "target": "room_1",
+          "label": "Daily Stand-up ở Meeting room 1",
+          "ref": 3,
+          "time": "09:15"
+        },
+        {
+          "type": "bugfix",
+          "target": "my_desk",
+          "label": "Xử lý comment review của anh Hùng",
+          "ref": 2,
+          "time": "15:00"
+        },
+        {
+          "type": "event",
+          "target": "pantry",
+          "label": "Ra góc cà phê dự sinh nhật",
+          "ref": "birthday",
+          "time": "15:30"
+        },
+        {
+          "type": "leave",
+          "target": "exit",
+          "label": "Ra về",
+          "time": "18:00"
+        }
+      ]
+    },
+    {
+      "title": "Sprint Demo",
+      "intro": "Thứ Sáu. Ngày demo kết quả sprint cho khách hàng Mỹ và họp Retrospective.",
+      "steps": [
+        {
+          "type": "standup",
+          "target": "room_1",
+          "label": "Daily Stand-up ở Meeting room 1",
+          "ref": 4,
+          "time": "09:15"
+        },
+        {
+          "type": "client",
+          "target": "room_3",
+          "label": "Demo sprint cho khách hàng Mỹ ở Meeting room 3",
+          "ref": 1,
+          "time": "11:00"
+        },
+        {
+          "type": "event",
+          "target": "room_1",
+          "label": "Họp Retrospective ở Meeting room 1",
+          "ref": "retro",
+          "time": "16:00"
+        },
+        {
+          "type": "leave",
+          "target": "exit",
+          "label": "Kết thúc tuần làm việc",
+          "time": "18:00"
+        }
+      ]
+    }
+  ],
+  "talks": {
+    "pm_welcome": {
+      "npc": "pm",
+      "text": "Chào mừng em đến với DU35! Team mình làm outsourcing cho khách hàng ở Singapore, Malaysia, Úc và Mỹ.\n\nSprint 2 tuần, daily stand-up lúc 9 giờ 15. Mọi trao đổi với khách bằng tiếng Anh, nên em cứ mạnh dạn nói nhé.",
+      "fx": {
+        "team": 3
+      }
+    },
+    "dev_pr": {
+      "npc": "dev",
+      "text": "Tạo branch theo format feature/<mã-ticket>, commit rõ ràng, push lên rồi tạo PR. Gắn anh Hùng làm reviewer, ít nhất 1 approve mới được merge.\n\nÀ, mai đi ăn trưa với team nhé!",
+      "fx": {
+        "skill": 3,
+        "team": 5
+      }
+    },
+    "director_welcome": {
+      "npc": "director",
+      "text": "Chào mừng em đến với DU35!\n\nDU35 hiện có 183 thành viên, làm việc với khách hàng ở Singapore, Malaysia, Úc và Mỹ qua hai mô hình: Dedicated Team và Project-Based.\n\nỞ đây mình đề cao sự chủ động, minh bạch và tinh thần hỗ trợ nhau. Chúc em tuần đầu thật vui! (Nội dung mẫu – sửa theo lời chào thật)",
+      "fx": {
+        "team": 4
+      }
+    }
+  },
+  "standups": [
+    {
+      "rounds": [
+        {
+          "q": "Đến lượt bạn. Hôm qua bạn làm gì?",
+          "options": [
+            "Hôm qua em làm thủ tục onboarding và setup máy, đã cài xong môi trường dev.",
+            "Dạ em cũng không nhớ lắm...",
+            "Em làm nhiều thứ lắm, để em kể từ sáng nhé: đầu tiên em đi gửi xe..."
+          ],
+          "a": 0
+        },
+        {
+          "q": "Hôm nay bạn định làm gì?",
+          "options": [
+            "Làm gì cũng được ạ.",
+            "Hôm nay em nhận ticket DU-101 sửa lỗi validate form, dự kiến xong trong ngày.",
+            "Em sẽ học thêm React vì em chưa biết."
+          ],
+          "a": 1
+        },
+        {
+          "q": "Bạn có blocker gì không?",
+          "options": [
+            "Không ạ (dù chưa có quyền truy cập repo).",
+            "Em chưa có quyền truy cập repo, nhờ anh Hùng cấp giúp ạ.",
+            "Blocker lớn nhất là cái máy lạnh hơi lạnh."
+          ],
+          "a": 1
+        }
+      ]
+    },
+    {
+      "rounds": [
+        {
+          "q": "Hôm qua bạn làm gì?",
+          "options": [
+            "Em xong DU-101, đã tạo PR và đang chờ review.",
+            "Em code.",
+            "Em ngồi đọc tài liệu nguyên ngày nhưng chưa hiểu gì."
+          ],
+          "a": 0
+        },
+        {
+          "q": "Hôm nay bạn định làm gì?",
+          "options": [
+            "Tham gia Sprint Planning, sau đó xử lý comment review của DU-101.",
+            "Chờ xem PM giao gì.",
+            "Em định refactor lại toàn bộ project."
+          ],
+          "a": 0
+        },
+        {
+          "q": "Blocker?",
+          "options": [
+            "Không có ạ.",
+            "Blocker là daily stand-up hơi sớm.",
+            "Có nhưng em tự xử lý được, không cần nói."
+          ],
+          "a": 0
+        }
+      ]
+    },
+    {
+      "rounds": [
+        {
+          "q": "Hôm qua bạn làm gì?",
+          "options": [
+            "Em merge DU-101 và bắt đầu DU-105 (API danh sách đơn hàng), xong khoảng 50%.",
+            "Em làm DU-105 nhưng không chắc tiến độ.",
+            "Hôm qua em họp nhiều quá nên chưa làm gì."
+          ],
+          "a": 0
+        },
+        {
+          "q": "Hôm nay bạn định làm gì?",
+          "options": [
+            "Em định trình bày luôn chi tiết từng hàm trong API cho cả team nghe.",
+            "Dự call với khách hàng Úc, sau đó làm tiếp DU-105.",
+            "Em định nghỉ chiều."
+          ],
+          "a": 1
+        },
+        {
+          "q": "Blocker?",
+          "options": [
+            "API bên thứ ba chưa có tài liệu, em cần chị Mai hỏi khách giúp.",
+            "Không ạ.",
+            "Blocker là em không thích ticket này."
+          ],
+          "a": 0
+        }
+      ]
+    },
+    {
+      "rounds": [
+        {
+          "q": "Hôm qua bạn làm gì?",
+          "options": [
+            "Em hỗ trợ fix bug production cùng team, rồi làm tiếp DU-105.",
+            "Hôm qua có bug production nhưng không phải lỗi của em.",
+            "Em làm như mọi ngày."
+          ],
+          "a": 0
+        },
+        {
+          "q": "Hôm nay bạn định làm gì?",
+          "options": [
+            "Hoàn thành DU-105 và xử lý comment review.",
+            "Em định đợi sinh nhật rồi tính tiếp.",
+            "Em định làm thêm 3 ticket ngoài sprint cho nhanh."
+          ],
+          "a": 0
+        },
+        {
+          "q": "Blocker?",
+          "options": [
+            "Không có ạ.",
+            "Môi trường staging bị down, em đã báo DevOps và đang chờ.",
+            "Cả hai đáp án đều được, tùy thực tế!"
+          ],
+          "a": 1
+        }
+      ]
+    },
+    {
+      "rounds": [
+        {
+          "q": "Hôm qua bạn làm gì?",
+          "options": [
+            "Em hoàn thành DU-105, đã deploy lên staging và QA đã pass.",
+            "Em làm xong rồi.",
+            "Em vẫn đang làm DU-101 từ thứ Hai."
+          ],
+          "a": 0
+        },
+        {
+          "q": "Hôm nay bạn định làm gì?",
+          "options": [
+            "Chuẩn bị demo DU-105 cho khách hàng Mỹ và dự Retrospective.",
+            "Hôm nay thứ Sáu nên làm nhẹ thôi ạ.",
+            "Em định demo luôn tính năng chưa làm xong."
+          ],
+          "a": 0
+        },
+        {
+          "q": "Blocker?",
+          "options": [
+            "Không có ạ.",
+            "Em sợ demo.",
+            "Blocker là cuối tuần đến chậm quá."
+          ],
+          "a": 0
+        }
+      ]
+    }
+  ],
+  "poker": [
+    {
+      "intro": "Anh Minh đọc từng user story, cả team cùng ước lượng story point bằng planning poker.",
+      "stories": [
+        {
+          "title": "DU-110 · Đăng nhập bằng Google",
+          "desc": "Là người dùng, tôi muốn đăng nhập bằng tài khoản Google để không phải nhớ mật khẩu.",
+          "team": [
+            5,
+            5,
+            3,
+            5
+          ],
+          "note": "Có SDK sẵn nhưng cần xử lý liên kết tài khoản cũ → 5 point."
+        },
+        {
+          "title": "DU-111 · Đổi màu nút Submit",
+          "desc": "Đổi màu nút Submit trên trang thanh toán theo brand guideline mới.",
+          "team": [
+            1,
+            1,
+            1,
+            2
+          ],
+          "note": "Thay đổi CSS nhỏ → 1 point."
+        },
+        {
+          "title": "DU-112 · Xuất báo cáo doanh thu ra Excel",
+          "desc": "Admin muốn xuất báo cáo doanh thu theo tháng ra file Excel, có lọc theo chi nhánh.",
+          "team": [
+            8,
+            8,
+            5,
+            8
+          ],
+          "note": "Truy vấn nặng, nhiều định dạng, cần test dữ liệu lớn → 8 point."
+        }
+      ]
+    }
+  ],
+  "bugs": [
+    {
+      "title": "DU-101 · Form đăng ký cho phép email rỗng",
+      "story": "QA báo: bấm Đăng ký khi để trống email vẫn gửi được form. Tìm dòng code gây lỗi.",
+      "code": [
+        "function validate(form) {",
+        "  const errors = [];",
+        "  if (form.email = '') {",
+        "    errors.push('Email is required');",
+        "  }",
+        "  if (form.password.length < 8) {",
+        "    errors.push('Password too short');",
+        "  }",
+        "  return errors;",
+        "}"
+      ],
+      "bug": 2,
+      "fixes": [
+        "if (form.email == null) {",
+        "if (form.email === '') {",
+        "if (!form.email) return;"
+      ],
+      "fix": 1,
+      "explain": "Dùng '=' là phép gán chứ không phải so sánh. Phải dùng '===' (hoặc kiểm tra !form.email.trim())."
+    },
+    {
+      "title": "DU-105 · Danh sách đơn hàng thiếu đơn cuối cùng",
+      "story": "Khách hàng phàn nàn: trang danh sách luôn thiếu đơn hàng cuối cùng.",
+      "code": [
+        "function renderOrders(orders) {",
+        "  const rows = [];",
+        "  for (let i = 0; i < orders.length - 1; i++) {",
+        "    rows.push(toRow(orders[i]));",
+        "  }",
+        "  return rows.join('');",
+        "}"
+      ],
+      "bug": 2,
+      "fixes": [
+        "for (let i = 1; i <= orders.length; i++) {",
+        "for (let i = 0; i < orders.length; i++) {",
+        "for (let i = 0; i < orders.length + 1; i++) {"
+      ],
+      "fix": 1,
+      "explain": "Lỗi off-by-one: điều kiện 'orders.length - 1' bỏ sót phần tử cuối."
+    },
+    {
+      "title": "Review comment · Tổng tiền sai khi có giảm giá",
+      "story": "Anh Hùng comment trong PR: 'Tổng tiền đang sai khi có mã giảm giá phần trăm, em xem lại nhé.'",
+      "code": [
+        "function total(items, discountPercent) {",
+        "  let sum = 0;",
+        "  for (const it of items) {",
+        "    sum += it.price * it.qty;",
+        "  }",
+        "  return sum - discountPercent;",
+        "}"
+      ],
+      "bug": 5,
+      "fixes": [
+        "return sum - sum * discountPercent / 100;",
+        "return sum * discountPercent;",
+        "return (sum - discountPercent) / 100;"
+      ],
+      "fix": 0,
+      "explain": "Giảm giá là phần trăm nên phải trừ sum * discountPercent / 100, không trừ thẳng con số."
+    }
+  ],
+  "clients": [
+    {
+      "name": "Mr. David",
+      "where": "Khách hàng Úc · Sydney",
+      "avatar": "#0b8f6a",
+      "steps": [
+        {
+          "say": "Hi team! Before we start, how is the progress on the order list feature?",
+          "options": [
+            {
+              "t": "Hi David! It's about 50% done. The API is ready; we're working on the UI and expect to finish by Thursday.",
+              "s": 25
+            },
+            {
+              "t": "Yes, yes. Good.",
+              "s": 0
+            },
+            {
+              "t": "It's very difficult, we don't know.",
+              "s": -15
+            }
+          ]
+        },
+        {
+          "say": "Great. Could we also add an export-to-PDF button in this sprint?",
+          "options": [
+            {
+              "t": "Sure, we'll do it this sprint, no problem!",
+              "s": -5,
+              "tip": "Đồng ý ngay việc ngoài phạm vi sprint dễ làm vỡ cam kết. Nên trao đổi với PM."
+            },
+            {
+              "t": "Good idea. Since it's outside the current sprint scope, let us estimate it and our PM will confirm whether it fits this sprint or the next.",
+              "s": 25
+            },
+            {
+              "t": "No, we can't.",
+              "s": -10
+            }
+          ]
+        },
+        {
+          "say": "Sounds good. One more thing — the third-party API docs. Did you get them?",
+          "options": [
+            {
+              "t": "Not yet. Could you share the API documentation and a sandbox key by tomorrow? It's currently blocking us.",
+              "s": 25
+            },
+            {
+              "t": "We will find them on Google.",
+              "s": -5
+            },
+            {
+              "t": "Not yet, but it's okay.",
+              "s": 0,
+              "tip": "Đây là blocker, nên nói rõ và đề nghị thời hạn cụ thể."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ms. Sarah",
+      "where": "Khách hàng Mỹ · New York",
+      "avatar": "#c2410c",
+      "steps": [
+        {
+          "say": "Hi team! It's late evening here in New York, so let's keep it focused. What are you showing us today?",
+          "options": [
+            {
+              "t": "Thanks for staying late, Sarah! Today we'll demo the order list and the bug fixes on the registration form. It'll take about 15 minutes.",
+              "s": 25
+            },
+            {
+              "t": "We show many things.",
+              "s": 0
+            },
+            {
+              "t": "Let me just start sharing my screen... wait, where's the file...",
+              "s": -10
+            }
+          ]
+        },
+        {
+          "say": "Hmm, the page loads a bit slowly with 10,000 orders. Is that expected?",
+          "options": [
+            {
+              "t": "No, it's fine on my machine.",
+              "s": -15
+            },
+            {
+              "t": "Good catch. We haven't added pagination yet. We'll create a ticket and propose a fix in the next sprint.",
+              "s": 25
+            },
+            {
+              "t": "Sorry, sorry, sorry.",
+              "s": -5
+            }
+          ]
+        },
+        {
+          "say": "Overall great work, team. Anything you need from us?",
+          "options": [
+            {
+              "t": "Thanks! Could you confirm the priority for next sprint's backlog by Monday?",
+              "s": 25
+            },
+            {
+              "t": "No, thank you.",
+              "s": 5
+            },
+            {
+              "t": "A salary raise, please!",
+              "s": -5
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "quizzes": {
+    "onboarding": {
+      "npc": "hr",
+      "intro": "Chào em, chị là Lan bên HR. Trước khi bắt đầu, mình cùng ôn nhanh vài quy định nhé! (Nội dung mẫu — sửa theo quy định thật của công ty)",
+      "questions": [
+        {
+          "q": "Giờ làm việc chính thức của công ty là?",
+          "options": [
+            "8:30 – 17:30",
+            "10:00 – 19:00",
+            "Tự do, miễn xong việc"
+          ],
+          "a": 0,
+          "explain": "[Sửa theo thực tế] Giờ làm việc chuẩn, có nghỉ trưa."
+        },
+        {
+          "q": "Bạn được phép đưa source code của khách hàng lên đâu?",
+          "options": [
+            "GitHub cá nhân để làm portfolio",
+            "Chỉ repository của công ty / khách hàng cấp",
+            "Google Drive cá nhân cho tiện"
+          ],
+          "a": 1,
+          "explain": "Bảo mật thông tin khách hàng là ưu tiên số 1 (NDA)."
+        },
+        {
+          "q": "Khi nhận được email lạ yêu cầu đăng nhập vào đường link, bạn nên?",
+          "options": [
+            "Đăng nhập thử xem sao",
+            "Chuyển tiếp cho cả team",
+            "Không bấm, báo ngay cho bộ phận IT/Security"
+          ],
+          "a": 2,
+          "explain": "Phishing là rủi ro bảo mật phổ biến nhất."
+        },
+        {
+          "q": "Muốn xin nghỉ phép, bạn cần?",
+          "options": [
+            "Báo bạn ngồi cạnh",
+            "Tạo đơn trên hệ thống và báo PM trước",
+            "Không cần báo"
+          ],
+          "a": 1,
+          "explain": "[Sửa theo thực tế] Đăng ký trên hệ thống nghỉ phép, báo PM sắp xếp công việc."
+        }
+      ]
+    }
+  },
+  "events": {
+    "prod_bug": {
+      "npc": "pm",
+      "title": "🚨 Bug production!",
+      "text": "4 giờ chiều, khách hàng Malaysia báo: người dùng không thanh toán được trên production. Anh Minh hỏi: 'Em đang rảnh không, hỗ trợ team một tay?'",
+      "options": [
+        {
+          "t": "Dừng task đang làm, vào hỗ trợ team điều tra log ngay.",
+          "fx": {
+            "team": 10,
+            "client": 10,
+            "energy": -15,
+            "progress": 5
+          },
+          "res": "Cả team tìm ra lỗi hết hạn chứng chỉ của cổng thanh toán trong 40 phút. Khách hàng rất hài lòng vì phản hồi nhanh!"
+        },
+        {
+          "t": "Em đang dở task, để em làm xong đã.",
+          "fx": {
+            "team": -8,
+            "progress": 8
+          },
+          "res": "Task của bạn xong, nhưng team phải xoay xở thiếu người. Anh Minh hơi buồn."
+        },
+        {
+          "t": "Đề xuất rollback phiên bản vừa deploy trước, rồi điều tra sau.",
+          "fx": {
+            "team": 8,
+            "client": 15,
+            "energy": -8,
+            "skill": 5
+          },
+          "res": "Quyết định rất chuyên nghiệp! Rollback giúp khách hàng hoạt động lại ngay, team điều tra thoải mái hơn."
+        }
+      ]
+    },
+    "birthday": {
+      "npc": "dev",
+      "title": "🎂 Sinh nhật Tuấn!",
+      "text": "Cả team tụ tập ở góc cà phê với bánh kem và trà sữa. Tuấn bảo bạn phát biểu một câu.",
+      "options": [
+        {
+          "t": "Chúc Tuấn tuổi mới code không bug, merge không conflict!",
+          "fx": {
+            "team": 12,
+            "energy": 10
+          },
+          "res": "Cả team cười ồ. Tuấn: 'Câu này phải in lên áo!'"
+        },
+        {
+          "t": "Ăn bánh nhanh rồi về làm tiếp.",
+          "fx": {
+            "team": 2,
+            "progress": 4
+          },
+          "res": "Bạn quay về bàn, team vẫn vui vẻ phía sau."
+        },
+        {
+          "t": "Đề xuất cuối tuần cả team đi team building.",
+          "fx": {
+            "team": 15,
+            "energy": 5
+          },
+          "res": "Anh Minh: 'Ý hay! Để anh xin quỹ team.' 🎉"
+        }
+      ]
+    },
+    "retro": {
+      "npc": "pm",
+      "title": "🔁 Sprint Retrospective",
+      "text": "Anh Minh: 'Mỗi người chia sẻ một điều team nên cải thiện cho sprint sau nhé.'",
+      "options": [
+        {
+          "t": "Nên làm rõ requirement với khách trước khi estimate để tránh làm lại.",
+          "fx": {
+            "team": 10,
+            "skill": 5,
+            "client": 5
+          },
+          "res": "Chị Mai gật đầu: 'Chuẩn! Sprint sau chị sẽ tổ chức buổi refinement trước planning.'"
+        },
+        {
+          "t": "Không có gì cần cải thiện ạ.",
+          "fx": {
+            "team": -3
+          },
+          "res": "Retro mà không có góp ý thì hơi phí. Mạnh dạn chia sẻ lần sau nhé!"
+        },
+        {
+          "t": "Lỗi tại QA test chậm.",
+          "fx": {
+            "team": -12
+          },
+          "res": "Không khí chùng xuống. Retro là để cải thiện quy trình, không đổ lỗi cá nhân."
+        }
+      ]
+    }
+  },
+  "endings": [
+    {
+      "min": 85,
+      "title": "🌟 Ngôi sao DU35",
+      "text": "Bạn hoà nhập cực nhanh, khách hàng tin tưởng và team quý mến. DU35 cần người như bạn!"
+    },
+    {
+      "min": 65,
+      "title": "🚀 Thành viên đáng tin cậy",
+      "text": "Một tuần làm việc vững vàng. Thêm vài sprint nữa bạn sẽ toả sáng."
+    },
+    {
+      "min": 45,
+      "title": "🌱 Tân binh tiềm năng",
+      "text": "Bạn đã nắm được cách team vận hành. Hãy chủ động hơn với khách hàng và đồng đội nhé."
+    },
+    {
+      "min": 0,
+      "title": "☕ Cần thêm cà phê",
+      "text": "Tuần đầu luôn khó. Chơi lại để thử các lựa chọn khác nhé!"
+    }
+  ],
+  "_note_layout": "Văn phòng dựng theo sơ đồ tầng 5. 'areas' là tên hiển thị các khu; 'spot' của NPC có dạng 'khu:số ghế' (khu: du35, m2..m5, qa, presale, erc, sdax, stl, br1, br2, ba, mgr_sdm, mgr_presale, mgr_qa, mgr_director, mgr_manager2, reception). Để trống 'name' thì chỉ hiện chức danh.",
+  "mySeat": "du35:0",
+  "fillRate": 0.6,
+  "areas": {
+    "erc": "Phòng dự án",
+    "presale": "Pre-sale",
+    "qa": "QA",
+    "du35": "DU35",
+    "m2": "Member",
+    "m3": "Member",
+    "m4": "Member",
+    "m5": "Member",
+    "sdax": "Team dự án A",
+    "stl": "Team dự án B",
+    "br1": "Member",
+    "br2": "Member",
+    "ba": "BA"
+  },
+  "kudos": [
+    {
+      "from": "Khách hàng Singapore (mẫu)",
+      "text": "The team delivered the release two days early with zero critical bugs. Fantastic job!"
+    },
+    {
+      "from": "Khách hàng Úc (mẫu)",
+      "text": "Very proactive communication. We always know where the project stands."
+    },
+    {
+      "from": "Khách hàng Mỹ (mẫu)",
+      "text": "Thank you for supporting us over the weekend during the go-live."
+    }
+  ],
+  "_note_kudos": "kudos: thay bằng lời khen thật (đã ẩn tên khách hàng) trên kệ ảnh khen ngợi."
+}

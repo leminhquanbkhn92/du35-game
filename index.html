@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Một Sprint ở DU35</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="labels"></div>
+
+<!-- HUD -->
+<div id="hud" hidden>
+  <div class="hud-top">
+    <div class="day-box">
+      <div id="hud-day">Ngày 1 / 5</div>
+      <div id="hud-clock">08:30</div>
+    </div>
+    <div id="hud-stats"></div>
+  </div>
+  <div id="objective"><span class="obj-tag">Nhiệm vụ</span><span id="obj-text"></span></div>
+  <div id="prompt" hidden></div>
+  <div class="help">WASD / mũi tên: di chuyển · Shift: chạy · E: tương tác · Chuột phải kéo: xoay camera · Lăn chuột: zoom</div>
+</div>
+
+<!-- Modal (dialog / mini-game) -->
+<div id="modal" hidden><div id="modal-card"></div></div>
+
+<!-- Toasts -->
+<div id="toasts"></div>
+
+<!-- Start screen -->
+<div id="start" class="screen">
+  <div class="start-card">
+    <div class="brand">DU35</div>
+    <h1>Một Sprint ở DU35</h1>
+    <p class="sub">Trải nghiệm 5 ngày làm việc thực tế trong team outsourcing phục vụ khách hàng Singapore · Malaysia · Úc · Mỹ</p>
+    <label>Tên của bạn
+      <input id="in-name" maxlength="20" placeholder="Ví dụ: Lê Minh">
+    </label>
+    <div class="label">Vị trí ứng tuyển</div>
+    <div id="role-pick" class="role-pick"></div>
+    <div class="start-actions">
+      <button id="btn-new" class="primary">Bắt đầu ngày đầu tiên</button>
+      <button id="btn-continue" hidden>Tiếp tục (Ngày <span id="cont-day"></span>)</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
