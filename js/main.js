@@ -4,6 +4,8 @@ import { buildOffice, seats, areaSeats, spots, rooms, collide, findPath, spawn, 
 import { makeCharacter, makeSeatedStatic, PASTEL } from './character.js';
 import { $, renderStats, chips, toast, dialog, openModal, closeModal, isModalOpen, head, esc, waitClick } from './ui.js';
 import * as MG from './minigames.js';
+import { createAmbient } from './ambient.js';
+import { statusOf, MOODS, STATUS } from './progress.js';
 
 const C = await fetch('data/content.json').then((r) => r.json());
 const SAVE_KEY = 'du35-sprint-v1';
@@ -50,7 +52,7 @@ function placeAtSeat(n) {
   n.ch.root.position.set(s.x, 0, s.z);
   n.ch.root.rotation.y = s.rot;
   n.ch.sit(true);
-  n.loc = 'seat'; n.path = []; n.face = null;
+  n.loc = 'seat'; n.path = []; n.face = null; n.moving = false; n.waitT = 0;
 }
 for (const [id, d] of Object.entries(C.npcs)) {
   const ch = makeCharacter({ shirt: d.color, hair: d.hair, female: d.female, seed: id.length * 977 + id.charCodeAt(0) * 31, ...(NPC_LOOK[id] || {}), ...(d.look || {}) });
@@ -111,6 +113,8 @@ const fillers = FILLER_SEATS.map((sid, i) => {
   placeAtSeat(n);
   return n;
 });
+// đồng nghiệp tự đi lại, họp hành, làm việc
+const ambient = createAmbient({ fillers, seats, findPath, placeAtSeat, label, getPlayerPos: () => player?.ch.root.position });
 
 function walkPath(n, pts) {
   return new Promise((resolve) => {
@@ -180,8 +184,10 @@ function turnTo(obj, target, k) {
 let player = null;
 function makePlayer() {
   if (player) scene.remove(player.ch.root);
-  const ch = makeCharacter({ shirt: ROLE_SHIRT[S.role] || '#4cc9f0', hair: '#2b1d14', hairStyle: 'short', acc: 'leaf', seed: 42 }); // mầm lá = tân binh 🌱
-  const lb = label(`${S.name} (bạn)`, 'npc-label me');
+  const ch = isManager()
+    ? makeCharacter({ shirt: '#3a86ff', hair: '#2b1d14', hairStyle: 'short', acc: 'glasses', seed: 43 })
+    : makeCharacter({ shirt: ROLE_SHIRT[S.role] || '#4cc9f0', hair: '#2b1d14', hairStyle: 'short', acc: 'leaf', seed: 42 }); // mầm lá = tân binh 🌱
+  const lb = label(`${S.name} (${isManager() ? 'quản lý' : 'bạn'})`, 'npc-label me');
   lb.position.y = 2.0;
   ch.root.add(lb);
   scene.add(ch.root);
@@ -200,6 +206,7 @@ addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return;
   keys[e.code] = true;
   if (e.code === 'KeyE' && !isModalOpen() && !busy && current) runInteraction(current);
+  if (e.code === 'KeyR' && S && isManager() && !isModalOpen() && !busy) showReport();
 });
 addEventListener('keyup', (e) => { keys[e.code] = false; });
 addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
@@ -278,9 +285,18 @@ function stepTargetPos(step) {
 // ---------- day flow ----------
 let busy = false, current = null;
 const curDay = () => C.days[S.day];
-const curStep = () => curDay()?.steps[S.step];
+const isManager = () => !!S && S.role === 'manager';
+const curStep = () => (isManager() ? null : curDay()?.steps[S.step]);
 
 function refreshHud() {
+  if (isManager()) {
+    $('#hud-day').textContent = 'Quản lý · Đi dạo DU35';
+    $('#hud-clock').textContent = S.clock;
+    const asked = Object.values(S.mgr || {}).filter((x) => x.asked).length;
+    $('#obj-text').textContent = `Hỏi thăm mọi người: ${asked}/${fillers.length} · Phím R: báo cáo tiến độ`;
+    renderStats(S.stats);
+    return;
+  }
   $('#hud-day').textContent = `Ngày ${S.day + 1} / ${C.days.length} · ${WEEKDAYS[S.day] || ''}`;
   $('#hud-clock').textContent = S.clock;
   const st = curStep();
@@ -314,13 +330,16 @@ function findInteraction() {
   }
   for (const n of fillers) {
     const q = n.ch.root.position, d = Math.hypot(q.x - p.x, q.z - p.z);
-    if (d < Math.min(bd, 1.6)) { bd = d; best = { kind: 'filler', n, text: n.person ? `Chào ${n.person.name}` : 'Chào đồng nghiệp' }; }
+    if (n.ch.pose === 'hidden') continue;
+    const who = n.person ? n.person.name : 'đồng nghiệp';
+    if (d < Math.min(bd, 1.6)) { bd = d; best = { kind: 'filler', n, text: isManager() ? `Hỏi thăm ${who}` : `Chào ${who}` }; }
   }
   const near = (v, r) => v && Math.hypot(v.x - p.x, v.z - p.z) < r;
   if (staffList.length && near(spots.directory, 1.6)) best = { kind: 'directory', text: 'Xem bảng thành viên DU35' };
   if (near(spots.coffee, 1.6)) best = { kind: 'coffee', text: 'Pha cà phê ☕' };
   if (near(spots.kudos, 1.8)) best = { kind: 'kudos', text: 'Xem ảnh khen ngợi từ khách hàng' };
   if (near(spots.wc, 1.4)) best = { kind: 'wc', text: 'Rửa mặt cho tỉnh táo 💧' };
+  if (isManager() && near(spots.exit, 1.8)) best = { kind: 'mgr-exit', text: 'Kết thúc buổi đi dạo' };
   return best;
 }
 
@@ -347,6 +366,137 @@ function showDirectory() {
   return waitClick(card.querySelector('#dir-close')).then(closeModal);
 }
 
+// ================= Vai Quản lý: đi dạo, hỏi thăm, nắm tiến độ =================
+const MGR_INTRO = 'Hôm nay bạn là quản lý. Hãy đi dạo quanh văn phòng, đến gần từng người và bấm E để hỏi thăm: xem họ đang làm gì, tiến độ ra sao, có vướng mắc không.\n\nĐộng viên, gỡ vướng, nhắc deadline hay rủ đi cà phê sẽ ảnh hưởng tới tinh thần team và tiến độ dự án.\n\nPhím R: xem báo cáo tiến độ theo khu. Ra cửa chính để kết thúc.';
+const addMin = (hhmm, m) => {
+  const [h, mm] = hhmm.split(':').map(Number);
+  const t = Math.min(23 * 60 + 59, h * 60 + mm + m);
+  return `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+};
+const areaName = (a) => (C.areas && C.areas[a]) || a;
+function personOf(n) { return n.person || { name: `Đồng nghiệp ${n.id.slice(1)}`, unit: 'DU35', stack: '' }; }
+function infoOf(n) {
+  const p = personOf(n);
+  S.mgr ||= {};
+  return (S.mgr[p.name] ||= statusOf(p, areaName(seats[n.seat].area)));
+}
+function progressBar(v, color) { return `<div class="meter"><div class="bar"><i style="width:${v}%;background:${color}"></i></div><b>${v}%</b></div>`; }
+
+async function managerTalk(n) {
+  const p = personOf(n), st = infoOf(n);
+  const honor = p.female ? 'Chị' : 'Anh';
+  const greet = ['Dạ, em hơi đuối chút ạ...', 'Dạ em vẫn ổn ạ.', 'Em chào anh/chị ạ!', 'Chào anh/chị! Hôm nay em vui lắm 😄'][st.mood];
+  const stInfo = STATUS[st.status];
+  const opts = [
+    { t: '👍 Động viên tinh thần', k: 'cheer' },
+    { t: '🧩 Hỏi vướng mắc & hỗ trợ', k: 'help' },
+    { t: '⏰ Nhắc deadline', k: 'push' },
+    { t: '☕ Rủ đi cà phê', k: 'coffee' },
+  ];
+  const card = openModal(`${head(p.name, `${p.unit}${p.stack ? ' · ' + p.stack : ''} · ${st.project}`, PASTEL[p.name.length % PASTEL.length], MOODS[st.mood])}
+    <div class="m-text">“${esc(greet)} Em đang <b>${esc(st.task)}</b>.”</div>
+    <div class="m-sub" style="margin-bottom:4px">Tiến độ việc đang làm · <b style="color:${stInfo.color}">${stInfo.label}</b></div>
+    ${progressBar(st.progress, stInfo.color)}
+    ${st.status !== 'ontrack' ? `<div class="feedback no">⚠️ Vướng mắc: ${esc(st.blocker)}</div>` : ''}
+    <div class="m-sub" style="margin:14px 0 8px">Bạn muốn:</div>
+    <div class="choices">${opts.map((o) => `<button>${o.t}</button>`).join('')}</div>
+    <div class="m-foot"><span></span><button id="mt-close">Đóng</button></div>`);
+  const pickK = await new Promise((res) => {
+    card.querySelectorAll('.choices button').forEach((b, i) => b.addEventListener('click', () => res(opts[i].k), { once: true }));
+    card.querySelector('#mt-close').addEventListener('click', () => res(null), { once: true });
+  });
+  if (!pickK) { closeModal(); return; }
+  const first = !st.asked;
+  st.asked = true;
+  let fx = {}, reply = '';
+  if (pickK === 'cheer') {
+    st.mood = Math.min(3, st.mood + 1);
+    fx = { team: first ? 2 : 1 };
+    reply = st.mood >= 2 ? 'Dạ em cảm ơn anh/chị, em có thêm động lực rồi ạ! 💪' : 'Dạ em cảm ơn, em sẽ cố gắng ạ.';
+  } else if (pickK === 'help') {
+    if (st.status !== 'ontrack') {
+      reply = `Dạ em đang vướng: ${st.blocker}. Anh/chị hỗ trợ giúp em thì tốt quá! (Bạn đã liên hệ để gỡ vướng) Em cảm ơn ạ, giờ em làm tiếp được rồi! 🙌`;
+      st.status = 'ontrack'; st.blocker = ''; st.progress = Math.min(100, st.progress + 10); st.mood = Math.min(3, st.mood + 1);
+      fx = { progress: 3, client: 2, team: 1 };
+    } else {
+      reply = 'Dạ hiện em chưa vướng gì ạ, có gì em báo anh/chị ngay.';
+      fx = { team: first ? 1 : 0 };
+    }
+  } else if (pickK === 'push') {
+    st.progress = Math.min(100, st.progress + 5);
+    if (st.mood <= 1) { st.mood = Math.max(0, st.mood - 1); fx = { team: -2, progress: 1 }; reply = 'Dạ... em biết rồi ạ 😓 (Có vẻ bạn ấy đang áp lực, nên hỏi vướng mắc trước.)'; }
+    else { fx = { progress: 2 }; reply = 'Dạ em nắm rồi ạ, em sẽ xong đúng hạn!'; }
+  } else if (pickK === 'coffee') {
+    st.mood = Math.min(3, st.mood + 1);
+    fx = { team: 2, energy: -3 };
+    reply = 'Ôi tuyệt quá, đi luôn anh/chị ơi! ☕';
+  }
+  applyFx(fx);
+  S.clock = addMin(S.clock, 10);
+  save();
+  refreshHud();
+  card.querySelector('.choices').outerHTML = `<div class="feedback ok">💬 ${honor} ${esc(p.name.split(' ').pop())}: “${esc(reply)}”<div style="margin-top:8px">${chips(fx)}</div></div>`;
+  const close = card.querySelector('#mt-close');
+  close.classList.add('primary');
+  close.focus();
+  await waitClick(close);
+  closeModal();
+  if (S.clock >= '18:00' && !S.lateWarned) { S.lateWarned = true; toast('🌆 Đã 18:00 rồi, ra cửa chính để kết thúc buổi đi dạo nhé!', 4000); }
+}
+
+function reportRows() {
+  const by = {};
+  for (const n of fillers) {
+    const a = seats[n.seat].area;
+    const r = (by[a] ||= { area: areaName(a), total: 0, asked: 0, sum: 0, blocked: 0, risk: 0 });
+    r.total++;
+    const st = S.mgr?.[personOf(n).name];
+    if (st && st.asked) { r.asked++; r.sum += st.progress; if (st.status === 'blocked') r.blocked++; if (st.status === 'atrisk') r.risk++; }
+  }
+  return Object.values(by);
+}
+
+function showReport() {
+  const rows = reportRows();
+  const tot = rows.reduce((a, r) => ({ total: a.total + r.total, asked: a.asked + r.asked, sum: a.sum + r.sum, blocked: a.blocked + r.blocked, risk: a.risk + r.risk }), { total: 0, asked: 0, sum: 0, blocked: 0, risk: 0 });
+  const cell = 'padding:7px 8px;border-bottom:1px solid var(--line);font-size:13px';
+  const card = openModal(`${head('Báo cáo tiến độ DU35', `${S.clock} · đã hỏi thăm ${tot.asked}/${tot.total} người`, '#1f5eff', '📊')}
+    <div class="summary-grid">
+      <div class="s">Tiến độ TB (đã hỏi)<b>${tot.asked ? Math.round(tot.sum / tot.asked) + '%' : '—'}</b></div>
+      <div class="s">Đang vướng<b style="color:#e5484d">${tot.blocked}</b></div>
+      <div class="s">Có rủi ro<b style="color:#e8a317">${tot.risk}</b></div>
+      <div class="s">🤝 Tinh thần team<b>${Math.round(S.stats.team)}</b></div>
+    </div>
+    <table style="width:100%;border-collapse:collapse">
+      <tr style="text-align:left;color:var(--muted)"><th style="${cell}">Khu / dự án</th><th style="${cell}">Người</th><th style="${cell}">Đã hỏi</th><th style="${cell}">Tiến độ TB</th><th style="${cell}">Vướng</th></tr>
+      ${rows.map((r) => `<tr><td style="${cell}"><b>${esc(r.area)}</b></td><td style="${cell}">${r.total}</td><td style="${cell}">${r.asked}</td>
+        <td style="${cell}">${r.asked ? progressBar(Math.round(r.sum / r.asked), '#1f5eff') : '<span class="m-sub">chưa hỏi</span>'}</td>
+        <td style="${cell};color:${r.blocked ? '#e5484d' : 'inherit'}">${r.blocked || '—'}</td></tr>`).join('')}
+    </table>
+    <div class="m-foot"><span class="m-sub">Chỉ thống kê những người bạn đã hỏi thăm</span><button class="primary" id="rp-close">Đóng</button></div>`);
+  return waitClick(card.querySelector('#rp-close')).then(closeModal);
+}
+
+async function managerEnd() {
+  const asked = Object.values(S.mgr || {}).filter((x) => x.asked).length;
+  const i = await dialog({ title: 'Kết thúc buổi đi dạo?', sub: S.clock, initial: '🏁', text: `Bạn đã hỏi thăm ${asked}/${fillers.length} người. Xem báo cáo tổng kết và kết thúc?`, buttons: ['Đi tiếp', 'Kết thúc'] });
+  if (i !== 1) return;
+  await showReport();
+  const st = S.stats;
+  const score = Math.round(((st.team + st.progress + st.client) / 3) * 0.7 + Math.min(100, (asked / Math.max(1, fillers.length)) * 100) * 0.3);
+  const title = score >= 80 ? '🌟 Quản lý được yêu mến nhất' : score >= 60 ? '🤝 Quản lý tận tâm' : score >= 40 ? '🚶 Quản lý chăm đi dạo' : '☕ Hôm sau đi dạo thêm nhé';
+  clearSave();
+  const card = openModal(`${head('Tổng kết buổi đi dạo', `${S.name} · Quản lý`, '#1f5eff', '🏁')}
+    <div style="text-align:center"><div class="title-badge">${title}</div></div>
+    <div class="summary-grid">
+      <div class="s">Điểm<b>${score}</b></div><div class="s">Đã hỏi thăm<b>${asked}</b></div>
+      <div class="s">🤝 Tinh thần team<b>${Math.round(st.team)}</b></div><div class="s">📈 Tiến độ<b>${Math.round(st.progress)}</b></div>
+      <div class="s">😊 Khách hàng<b>${Math.round(st.client)}</b></div>
+    </div>
+    <div class="m-foot"><button id="again" class="primary">Chơi lại</button></div>`);
+  card.querySelector('#again').addEventListener('click', () => location.reload());
+}
+
 async function runInteraction(it) {
   busy = true;
   $('#prompt').hidden = true;
@@ -358,6 +508,10 @@ async function runInteraction(it) {
       const first = !S.talked[n.id];
       await dialog({ title: npcTitle(n.d), sub: 'Trò chuyện', color: n.d.color, text: line, extra: first ? chips({ team: 1 }) : '', buttons: ['OK'] });
       if (first) { S.talked[n.id] = true; applyFx({ team: 1 }); save(); }
+    } else if (it.kind === 'filler' && isManager()) {
+      await managerTalk(it.n);
+    } else if (it.kind === 'mgr-exit') {
+      await managerEnd();
     } else if (it.kind === 'filler') {
       const who = it.n.person;
       toast(`${who ? `<b>${esc(who.name)}</b> · ${esc(who.unit)}${who.stack ? ' · ' + esc(who.stack) : ''}<br>` : ''}💬 ${FILLER_LINES[Math.floor(Math.random() * FILLER_LINES.length)]}`, 3500);
@@ -472,8 +626,8 @@ async function startDay() {
   S.dayStart = { ...S.stats };
   S.coffee = 0;
   S.talked = {};
-  S.clock = '08:30';
-  if (S.step > 0) S.clock = curDay().steps[S.step - 1].time;
+  S.clock = isManager() ? (S.clock && S.clock !== '08:30' ? S.clock : '09:00') : '08:30';
+  if (!isManager() && S.step > 0) S.clock = curDay().steps[S.step - 1].time;
   save();
   for (const n of Object.values(npcs)) { n.chain = Promise.resolve(); placeAtSeat(n); }
   spawnPlayer();
@@ -482,6 +636,13 @@ async function startDay() {
   refreshHud();
   $('#hud').hidden = false;
   gatherFor(curStep());
+  if (isManager()) {
+    if (!S.mgrIntro) {
+      S.mgrIntro = true; save();
+      await dialog({ title: 'Vai Quản lý', sub: 'Đi dạo DU35', initial: '🧭', text: MGR_INTRO, buttons: ['Bắt đầu đi dạo'] });
+    }
+    return;
+  }
   if (S.step === 0) await dialog({ title: `Ngày ${S.day + 1}: ${curDay().title}`, sub: WEEKDAYS[S.day], initial: S.day + 1, text: curDay().intro, buttons: ['Bắt đầu'] });
 }
 
@@ -513,13 +674,13 @@ function frame() {
   const dt = Math.min(clock.getDelta(), 0.05);
   t += dt;
   for (const n of Object.values(npcs)) updateNpc(n, dt);
-  for (const n of fillers) n.ch.update(dt, 0);
+  ambient.update(dt);
   // thỉnh thoảng một đồng nghiệp gần đó bật biểu tượng cảm xúc
   emoteTimer -= dt;
   if (player && emoteTimer <= 0 && fillers.length) {
     emoteTimer = 0.9 + Math.random() * 1.2;
     const pp = player.ch.root.position;
-    const near = fillers.filter((n) => Math.hypot(n.ch.root.position.x - pp.x, n.ch.root.position.z - pp.z) < 14);
+    const near = fillers.filter((n) => !n.busy && Math.hypot(n.ch.root.position.x - pp.x, n.ch.root.position.z - pp.z) < 14);
     if (near.length) {
       const n = near[Math.floor(Math.random() * near.length)];
       const e = label(EMOTES[Math.floor(Math.random() * EMOTES.length)], 'emote');
@@ -531,7 +692,7 @@ function frame() {
   // chỉ hiện tên đồng nghiệp ở gần để màn hình không bị rối
   if (player) {
     const pp = player.ch.root.position;
-    for (const n of fillers) if (n.label) n.label.visible = Math.hypot(n.ch.root.position.x - pp.x, n.ch.root.position.z - pp.z) < 3.0;
+    for (const n of fillers) if (n.label) n.label.visible = n.ch.pose !== 'hidden' && Math.hypot(n.ch.root.position.x - pp.x, n.ch.root.position.z - pp.z) < (isManager() ? 4.0 : 3.0);
   }
   updatePlayer(dt);
   updateCamera(dt);
@@ -568,6 +729,7 @@ if (location.search.includes('debug')) {
     interact() { const it = findInteraction(); if (it) runInteraction(it); return it?.text; },
     npcs, step: () => curStep(), mergeInfo, fillers: () => fillers.length,
     bench() { const t0 = performance.now(); for (let i = 0; i < 20; i++) renderer.render(scene, camera); renderer.getContext().finish(); return { msPerFrame: ((performance.now() - t0) / 20).toFixed(2), calls: renderer.info.render.calls, tris: renderer.info.render.triangles }; },
-    ff(sec) { for (let i = 0; i < sec * 30; i++) for (const n of Object.values(npcs)) updateNpc(n, 1 / 30); },
+    ff(sec) { for (let i = 0; i < sec * 30; i++) { for (const n of Object.values(npcs)) updateNpc(n, 1 / 30); ambient.update(1 / 30); } },
+    ambient, managerTalk: (i) => managerTalk(fillers[i]), showReport, fillerList: fillers,
   };
 }

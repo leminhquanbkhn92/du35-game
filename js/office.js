@@ -484,7 +484,8 @@ export function findPath(from, to) {
     for (let m = cells.length - 1; m > k + 1; m--) if (lineFree(a.x, a.z, cells[m].x, cells[m].z)) { far = m; break; }
     out.push(cells[far]); a = cells[far]; k = far;
   }
-  out.push({ x: to.x, z: to.z });
+  const [oi, oj] = toCell(to.x, to.z);
+  out.push(free(oi, oj) ? { x: to.x, z: to.z } : cells[cells.length - 1]);
   return out;
 }
 

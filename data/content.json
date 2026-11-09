@@ -24,6 +24,17 @@
         "skill": 30,
         "client": 60
       }
+    },
+    "manager": {
+      "name": "Quản lý",
+      "desc": "Đi dạo, hỏi thăm",
+      "stats": {
+        "energy": 90,
+        "skill": 60,
+        "team": 50,
+        "client": 55,
+        "progress": 50
+      }
     }
   },
   "startStats": {
@@ -935,14 +946,14 @@
     "presale": "Pre-sale",
     "qa": "QA",
     "du35": "DU35",
-    "m2": "Member",
-    "m3": "Member",
-    "m4": "Member",
-    "m5": "Member",
+    "m2": "Member A",
+    "m3": "Member B",
+    "m4": "Member C",
+    "m5": "Member D",
     "sdax": "Team dự án A",
     "stl": "Team dự án B",
-    "br1": "Member",
-    "br2": "Member",
+    "br1": "Member E",
+    "br2": "Member F",
     "ba": "BA"
   },
   "kudos": [

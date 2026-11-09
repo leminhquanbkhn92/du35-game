@@ -31,6 +31,18 @@ cd du35-deploy && git add -A && git commit -m "Cập nhật game" && git push
 - **Chuột phải kéo**: xoay camera · **Lăn chuột**: zoom
 - Đi theo mũi tên cam để làm nhiệm vụ. Có thể trò chuyện với đồng nghiệp và pha cà phê ở pantry để hồi năng lượng.
 
+## Vai Quản lý (chế độ đi dạo)
+
+Chọn **Quản lý** ở màn hình bắt đầu: không có nhiệm vụ, đi dạo tự do quanh văn phòng.
+- Đến gần ai và bấm **E** để hỏi thăm: họ đang làm gì, tiến độ bao nhiêu %, đúng tiến độ / có rủi ro / đang vướng, tâm trạng.
+- Chọn **Động viên**, **Hỏi vướng mắc & hỗ trợ**, **Nhắc deadline** hoặc **Rủ đi cà phê**, mỗi lựa chọn ảnh hưởng tinh thần team và tiến độ.
+- **Phím R**: báo cáo tiến độ theo từng khu (chỉ tính những người đã hỏi). Ra cửa chính để kết thúc và xem tổng kết.
+- Tình hình công việc là **giả lập** (`js/progress.js`), cố định theo tên người.
+
+## Cuộc sống văn phòng
+
+Đồng nghiệp tự đứng dậy đi pha cà phê, đi vệ sinh, xem kệ ảnh khen ngợi, ghé bàn nhau tán gẫu, gọi điện trong phone booth và rủ nhau họp nhóm (Meeting room 2 hoặc họp đứng ở hành lang), xong thì về chỗ làm việc. Cấu hình trong `js/ambient.js`.
+
 ## Nội dung 5 ngày
 
 | Ngày | Hoạt động |

@@ -277,15 +277,13 @@ export function makeCharacter(o = {}) {
   };
 }
 
-// Nhân vật ngồi tĩnh gộp thành 1 mesh (dùng cho ~180 đồng nghiệp, giảm draw call rất nhiều).
-// Vẫn lắc lư nhẹ cả người cho sinh động.
+// Đồng nghiệp gộp thành 1 mesh cho nhẹ (~180 người). Có 2 dáng: ngồi và đứng (tạo khi cần).
+// Khi đi lại thì nhún nhảy cả người kiểu chibi.
 const BAKED_MAT = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.75 });
-export function makeSeatedStatic(opts) {
-  const ch = makeCharacter({ ...opts, detail: false });
-  ch.sit(true);
-  ch.root.updateMatrixWorld(true);
+function bake(root) {
+  root.updateMatrixWorld(true);
   const geos = [];
-  ch.root.traverse((o) => {
+  root.traverse((o) => {
     if (!o.isMesh || o.material.isMeshBasicMaterial) return;
     let g = o.geometry.clone().applyMatrix4(o.matrixWorld);
     if (g.index) g = g.toNonIndexed();
@@ -297,16 +295,39 @@ export function makeSeatedStatic(opts) {
   });
   const mesh = new THREE.Mesh(mergeGeometries(geos, false), BAKED_MAT);
   mesh.castShadow = true;
+  return mesh;
+}
+export function makeStaticPerson(opts) {
+  const o = { ...opts, detail: false };
+  const sitCh = makeCharacter(o);
+  sitCh.sit(true);
+  const seated = bake(sitCh.root);
+  let standing = null;
   const root = new THREE.Group();
-  root.add(mesh);
-  let t = Math.random() * 10;
+  root.add(seated);
+  let t = Math.random() * 10, pose = 'sit';
   const w = 1.6 + Math.random() * 1.6, ph = Math.random() * 6.28;
-  return {
-    root, head: null, sitting: true, sit() {},
-    update(dt) {
+  const api = {
+    root, head: null,
+    get pose() { return pose; },
+    setPose(p) {
+      pose = p;
+      if (p === 'stand' && !standing) { const c = makeCharacter(o); c.sit(false); standing = bake(c.root); root.add(standing); }
+      seated.visible = p === 'sit';
+      if (standing) standing.visible = p === 'stand';
+    },
+    sit(on) { api.setPose(on ? 'sit' : 'stand'); },
+    update(dt, moving) {
       t += dt;
-      mesh.position.y = Math.abs(Math.sin(t * w + ph)) * 0.015;
-      mesh.rotation.z = Math.sin(t * w * 0.5 + ph) * 0.03;
+      if (pose === 'sit') {
+        seated.position.y = Math.abs(Math.sin(t * w + ph)) * 0.015;
+        seated.rotation.z = Math.sin(t * w * 0.5 + ph) * 0.03;
+      } else if (pose === 'stand' && standing) {
+        if (moving) { standing.position.y = Math.abs(Math.sin(t * 9 + ph)) * 0.12; standing.rotation.z = Math.sin(t * 9 + ph) * 0.07; }
+        else { standing.position.y = Math.abs(Math.sin(t * 2 + ph)) * 0.02; standing.rotation.z = Math.sin(t * 1.3 + ph) * 0.04; }
+      }
     },
   };
+  return api;
 }
+export const makeSeatedStatic = makeStaticPerson;
