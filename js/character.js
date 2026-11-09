@@ -221,9 +221,49 @@ export function makeCharacter(o = {}) {
   let phase = rnd() * 10, sitting = false, t = rnd() * 10;
   const ph = rnd() * 6.28;
   let hopTimer = 2 + rnd() * 6, hop = 0;
+  // trạng thái hành động (người chơi & nhân vật chính)
+  let crouching = false, inAir = false, punchT = 0, bumpT = 0, bumpKind = 'spin', gun = null;
+  const PUNCH = 0.28, BUMP = 0.7;
+
+  function applyActions(dt) {
+    if (crouching) {
+      body.position.y -= 0.13;
+      legL.rotation.x = legR.rotation.x = -0.8;
+      legL.rotation.z = 0.15; legR.rotation.z = -0.15;
+    } else { legL.rotation.z = legR.rotation.z = 0; }
+    if (inAir) {
+      legL.rotation.x = -0.7; legR.rotation.x = 0.35;
+      armL.rotation.z = -0.9; armR.rotation.z = 0.9;
+    }
+    if (gun) { armR.rotation.x = -1.45; armL.rotation.x = -1.25; armL.rotation.z = 0.35; armR.rotation.z = 0; }
+    if (punchT > 0) {
+      punchT = Math.max(0, punchT - dt);
+      const k = Math.sin((1 - punchT / PUNCH) * Math.PI);
+      armR.rotation.x = -1.65 * k; armR.rotation.z = -0.25 * k;
+      body.rotation.y = -0.35 * k;
+    } else body.rotation.y = 0;
+    if (bumpT > 0) {
+      bumpT = Math.max(0, bumpT - dt);
+      const k = 1 - bumpT / BUMP;
+      if (bumpKind === 'spin') body.rotation.y = k * Math.PI * 2;
+      else body.rotation.z = Math.sin(k * Math.PI * 6) * 0.25 * (1 - k);
+      body.position.y += Math.sin(k * Math.PI) * 0.22;
+      head.rotation.z = Math.sin(k * Math.PI * 4) * 0.3;
+    }
+  }
 
   return {
     root, head,
+    get crouching() { return crouching; },
+    crouch(on) { crouching = on; },
+    setAir(on) { inAir = on; },
+    punch() { if (punchT <= 0) punchT = PUNCH; },
+    bump(kind = 'spin') { bumpKind = kind; bumpT = BUMP; },
+    holdGun(obj) {
+      if (gun) armR.remove(gun);
+      gun = obj || null;
+      if (gun) { gun.position.set(0, -0.33, 0.04); gun.rotation.x = Math.PI / 2; armR.add(gun); }
+    },
     get sitting() { return sitting; },
     sit(on) {
       sitting = on;
@@ -241,6 +281,7 @@ export function makeCharacter(o = {}) {
         armR.rotation.x = -1.0 + Math.cos(t * 11 + ph) * 0.08;
         head.rotation.z = Math.sin(t * 2.2 + ph) * 0.07; // lắc lư theo nhạc
         body.position.y = -0.05 + Math.abs(Math.sin(t * 4.4 + ph)) * 0.012;
+        if (bumpT > 0) applyActions(dt);
         return;
       }
       if (speed > 0.05) {
@@ -273,8 +314,20 @@ export function makeCharacter(o = {}) {
           armL.rotation.z = -0.6 * Math.sin(hop * Math.PI); armR.rotation.z = 0.6 * Math.sin(hop * Math.PI);
         } else body.position.y = Math.sin(t * 2.4 + ph) * 0.01;
       }
+      applyActions(dt);
     },
   };
+}
+
+// Súng nước đồ chơi (màu sặc sỡ)
+export function makeWaterGun() {
+  const g = new THREE.Group();
+  const add = (geo, color, x, y, z, rx = 0) => { const m = part(geo, color); m.position.set(x, y, z); m.rotation.x = rx; g.add(m); return m; };
+  add(new THREE.BoxGeometry(0.09, 0.1, 0.28), '#ff9f1c', 0, 0, 0.05);
+  add(new THREE.CylinderGeometry(0.055, 0.055, 0.16, 12), '#4cc9f0', 0, 0.09, 0.02, Math.PI / 2);
+  add(new THREE.CylinderGeometry(0.022, 0.022, 0.12, 8), '#ffd166', 0, 0.01, 0.24, Math.PI / 2);
+  add(new THREE.BoxGeometry(0.06, 0.12, 0.06), '#06d6a0', 0, -0.09, -0.04);
+  return g;
 }
 
 // Đồng nghiệp gộp thành 1 mesh cho nhẹ (~180 người). Có 2 dáng: ngồi và đứng (tạo khi cần).
@@ -305,10 +358,11 @@ export function makeStaticPerson(opts) {
   let standing = null;
   const root = new THREE.Group();
   root.add(seated);
-  let t = Math.random() * 10, pose = 'sit';
+  let t = Math.random() * 10, pose = 'sit', bumpT = 0, bumpKind = 'spin';
   const w = 1.6 + Math.random() * 1.6, ph = Math.random() * 6.28;
   const api = {
     root, head: null,
+    bump(kind = 'spin') { bumpKind = kind; bumpT = 0.7; },
     get pose() { return pose; },
     setPose(p) {
       pose = p;
@@ -325,6 +379,16 @@ export function makeStaticPerson(opts) {
       } else if (pose === 'stand' && standing) {
         if (moving) { standing.position.y = Math.abs(Math.sin(t * 9 + ph)) * 0.12; standing.rotation.z = Math.sin(t * 9 + ph) * 0.07; }
         else { standing.position.y = Math.abs(Math.sin(t * 2 + ph)) * 0.02; standing.rotation.z = Math.sin(t * 1.3 + ph) * 0.04; }
+      }
+      const m = pose === 'sit' ? seated : standing;
+      if (m) {
+        if (bumpT > 0) {
+          bumpT = Math.max(0, bumpT - dt);
+          const k = 1 - bumpT / 0.7;
+          if (bumpKind === 'spin') m.rotation.y = k * Math.PI * 2; // xoay vòng (xoay cả ghế cho vui)
+          else m.rotation.z = Math.sin(k * Math.PI * 6) * 0.22 * (1 - k);
+          m.position.y += Math.sin(k * Math.PI) * 0.25;
+        } else m.rotation.y = 0;
       }
     },
   };

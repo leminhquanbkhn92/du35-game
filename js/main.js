@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { scene, camera, renderer, labelRenderer, label, sun } from './stage.js';
 import { buildOffice, seats, areaSeats, spots, rooms, collide, findPath, spawn, BOUNDS, mergeStatic } from './office.js';
-import { makeCharacter, makeSeatedStatic, PASTEL } from './character.js';
+import { makeCharacter, makeSeatedStatic, makeWaterGun, PASTEL } from './character.js';
 import { $, renderStats, chips, toast, dialog, openModal, closeModal, isModalOpen, head, esc, waitClick } from './ui.js';
 import * as MG from './minigames.js';
 import { createAmbient } from './ambient.js';
@@ -193,6 +193,7 @@ function makePlayer() {
   scene.add(ch.root);
   player = { ch, vel: 0 };
   spawnPlayer();
+  resetActions();
 }
 function spawnPlayer() {
   player.ch.sit(false);
@@ -206,28 +207,41 @@ addEventListener('keydown', (e) => {
   if (e.target.tagName === 'INPUT') return;
   keys[e.code] = true;
   if (e.code === 'KeyE' && !isModalOpen() && !busy && current) runInteraction(current);
-  if (e.code === 'KeyR' && S && isManager() && !isModalOpen() && !busy) showReport();
+  const free = S && player && !isModalOpen() && !busy;
+  if (!free) return;
+  if (e.code === 'Space') { e.preventDefault(); jump(); }
+  if (e.code === 'KeyC' && !e.repeat) player.ch.crouch(!player.ch.crouching);
+  if (e.code === 'KeyQ' && !e.repeat) toggleWeapon();
+  if (e.code === 'KeyR' && !e.repeat) startReload();
+  if (e.code === 'KeyB' && isManager()) showReport();
 });
 addEventListener('keyup', (e) => { keys[e.code] = false; });
 addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
-const cam = { yaw: 0, pitch: 0.92, dist: 12.5 };
+const cam = { yaw: 0, pitch: 0.92, dist: 12.5, cur: 12.5 };
 let dragging = false, lastX = 0;
 renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
-renderer.domElement.addEventListener('pointerdown', (e) => { if (e.button === 2 || e.button === 1) { dragging = true; lastX = e.clientX; } });
-addEventListener('pointerup', () => { dragging = false; });
+renderer.domElement.addEventListener('pointerdown', (e) => {
+  if (e.button === 1) { dragging = true; lastX = e.clientX; e.preventDefault(); }       // chuột giữa: xoay camera
+  if (e.button === 2) ACT.zoom = true;                                                   // giữ chuột phải: zoom
+  if (e.button === 0 && S && player && !isModalOpen() && !busy) { aimAt(e); ACT.mode === 'fist' ? doPunch() : doShoot(); } // chuột trái: đấm / bắn
+});
+addEventListener('pointerup', (e) => { dragging = false; if (e.button === 2) ACT.zoom = false; });
 addEventListener('pointermove', (e) => { if (dragging) { cam.yaw -= (e.clientX - lastX) * 0.006; lastX = e.clientX; } });
 renderer.domElement.addEventListener('wheel', (e) => { cam.dist = Math.max(6, Math.min(20, cam.dist + e.deltaY * 0.01)); }, { passive: true });
 const camTarget = new THREE.Vector3();
 function updateCamera(dt, snap = false) {
   const p = player ? player.ch.root.position : new THREE.Vector3(0, 0, 2);
+  const wantDist = ACT.zoom ? Math.max(4.2, cam.dist * 0.42) : cam.dist;
+  cam.cur += (wantDist - cam.cur) * (snap ? 1 : Math.min(1, dt * 8));
+  const D = cam.cur;
   const want = new THREE.Vector3(
-    p.x + Math.sin(cam.yaw) * Math.cos(cam.pitch) * cam.dist,
-    Math.sin(cam.pitch) * cam.dist,
-    p.z + Math.cos(cam.yaw) * Math.cos(cam.pitch) * cam.dist);
+    p.x + Math.sin(cam.yaw) * Math.cos(cam.pitch) * D,
+    Math.sin(cam.pitch) * D,
+    p.z + Math.cos(cam.yaw) * Math.cos(cam.pitch) * D);
   const k = snap ? 1 : Math.min(1, dt * 6);
   camera.position.lerp(want, k);
   // nhìn hơi lệch về phía trước người chơi để thấy nhiều văn phòng hơn
-  const ahead = cam.dist * 0.18;
+  const ahead = D * 0.18;
   camTarget.lerp(new THREE.Vector3(p.x - Math.sin(cam.yaw) * ahead, 1, p.z - Math.cos(cam.yaw) * ahead), snap ? 1 : Math.min(1, dt * 8));
   camera.lookAt(camTarget);
   // mặt trời (bóng đổ) đi theo vùng camera đang nhìn vì văn phòng rất rộng
@@ -249,7 +263,7 @@ function updatePlayer(dt) {
     const rx = Math.cos(cam.yaw), rz = -Math.sin(cam.yaw);
     let mx = fx * f + rx * s, mz = fz * f + rz * s;
     const len = Math.hypot(mx, mz); mx /= len; mz /= len;
-    speed = keys.ShiftLeft || keys.ShiftRight ? 5.5 : 3.3;
+    speed = (keys.ShiftLeft || keys.ShiftRight ? 5.5 : 3.3) * (player.ch.crouching ? 0.5 : 1);
     r.position.x += mx * speed * dt;
     r.position.z += mz * speed * dt;
     turnTo(r, Math.atan2(mx, mz), dt * 12);
@@ -264,6 +278,132 @@ function updatePlayer(dt) {
   r.position.x = Math.max(BOUNDS.minX + 0.2, Math.min(BOUNDS.maxX - 0.2, r.position.x));
   r.position.z = Math.max(BOUNDS.minZ + 0.2, Math.min(BOUNDS.maxZ - 0.2, r.position.z));
   player.ch.update(dt, speed);
+}
+
+// ================= Hành động vui: nhảy, ngồi, đấm (hoạt hình), súng nước =================
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+const ACT = { mode: 'fist', ammo: 10, maxAmmo: 10, reload: 0, cd: 0, vy: 0, y: 0, zoom: false, lastHurt: 0, toastT: 0 };
+const gunModel = makeWaterGun();
+const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2(), groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+const drops = [];
+const dropGeo = new THREE.SphereGeometry(0.07, 8, 6);
+const dropMat = new THREE.MeshStandardMaterial({ color: '#5ec8ff', transparent: true, opacity: 0.85, emissive: '#2a8fd8', emissiveIntensity: 0.3 });
+
+function emoteOn(root, e, y = 1.95) {
+  const l = label(e, 'emote');
+  l.position.y = y;
+  root.add(l);
+  setTimeout(() => { root.remove(l); l.element.remove(); }, 2400);
+}
+function targets() {
+  return [
+    ...Object.values(npcs).map((n) => ({ n, ch: n.ch, name: n.d.name || n.d.role })),
+    ...fillers.filter((n) => n.ch.pose !== 'hidden').map((n) => ({ n, ch: n.ch, name: n.person?.name || 'Đồng nghiệp' })),
+  ];
+}
+function renderWeapon() {
+  const el = $('#weapon');
+  if (!el) return;
+  el.hidden = !S;
+  if (!S) return;
+  el.innerHTML = ACT.mode === 'fist'
+    ? '🥊 <b>Tay không</b><span>Chuột trái: đấm · Q: đổi sang súng nước</span>'
+    : `💦 <b>Súng nước</b> <span class="ammo">${'●'.repeat(ACT.ammo)}${'○'.repeat(ACT.maxAmmo - ACT.ammo)}</span>${ACT.reload > 0 ? ' <i>đang nạp…</i>' : ''}<span>Chuột trái: bắn · R: nạp nước · Q: đổi tay</span>`;
+}
+function resetActions() {
+  Object.assign(ACT, { mode: 'fist', ammo: ACT.maxAmmo, reload: 0, cd: 0, vy: 0, y: 0, zoom: false });
+  for (const d of drops) scene.remove(d.m);
+  drops.length = 0;
+  renderWeapon();
+}
+function aimAt(e) {
+  const r = renderer.domElement.getBoundingClientRect();
+  ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  raycaster.setFromCamera(ndc, camera);
+  const p = new THREE.Vector3();
+  if (raycaster.ray.intersectPlane(groundPlane, p)) {
+    const pr = player.ch.root.position;
+    if (Math.hypot(p.x - pr.x, p.z - pr.z) > 0.2) player.ch.root.rotation.y = Math.atan2(p.x - pr.x, p.z - pr.z);
+  }
+}
+function onHit(t, kind) {
+  t.ch.bump(kind === 'punch' ? 'spin' : 'wobble');
+  emoteOn(t.ch.root, kind === 'punch' ? pick(['💫', '😵‍💫', '🤣', '😆']) : pick(['💦', '😂', '🥶', '🤭']), t.ch.pose === 'sit' ? 1.75 : 2.0);
+  if (kind !== 'punch') return;
+  const now = performance.now();
+  if (now - ACT.lastHurt > 1500) { ACT.lastHurt = now; applyFx({ team: -1 }); }
+  if (now - ACT.toastT > 3000) {
+    ACT.toastT = now;
+    toast(`🥊 <b>${esc(t.name)}</b>: “${pick(['Ui da! Đấm nhẹ thôi 😆', 'Đang deadline mà đùa à! 🤣', 'Để tí ra góc cà phê tính sổ nha! 😤', 'Hết hồn! 😵‍💫'])}”<br><span style="opacity:.75">Đùa quá tay làm tinh thần team giảm nhẹ</span>`, 3200);
+  }
+}
+function doPunch() {
+  if (ACT.cd > 0) return;
+  ACT.cd = 0.35;
+  player.ch.punch();
+  const r = player.ch.root, fx = Math.sin(r.rotation.y), fz = Math.cos(r.rotation.y);
+  let best = null, bd = 1.4;
+  for (const t of targets()) {
+    const q = t.ch.root.position, dx = q.x - r.position.x, dz = q.z - r.position.z, d = Math.hypot(dx, dz);
+    if (d < bd && d > 0.01 && (dx * fx + dz * fz) / d > 0.45) { bd = d; best = t; }
+  }
+  if (best) setTimeout(() => onHit(best, 'punch'), 120);
+}
+function doShoot() {
+  if (ACT.cd > 0 || ACT.reload > 0) return;
+  if (ACT.ammo <= 0) { toast('💧 Hết nước! Bấm R để nạp.'); ACT.cd = 0.4; return; }
+  ACT.cd = 0.22;
+  ACT.ammo--;
+  renderWeapon();
+  const r = player.ch.root, f = new THREE.Vector3(Math.sin(r.rotation.y), 0, Math.cos(r.rotation.y));
+  const m = new THREE.Mesh(dropGeo, dropMat);
+  m.position.set(r.position.x + f.x * 0.55, r.position.y + (player.ch.crouching ? 0.78 : 0.98), r.position.z + f.z * 0.55);
+  scene.add(m);
+  drops.push({ m, v: f.multiplyScalar(13).setY(1.2), life: 1.3 });
+  if (ACT.ammo === 0) setTimeout(() => toast('💧 Hết nước! Bấm R để nạp.'), 250);
+}
+function startReload() {
+  if (ACT.mode !== 'gun' || ACT.reload > 0 || ACT.ammo === ACT.maxAmmo) return;
+  ACT.reload = 1.2;
+  renderWeapon();
+}
+function toggleWeapon() {
+  ACT.mode = ACT.mode === 'fist' ? 'gun' : 'fist';
+  player.ch.holdGun(ACT.mode === 'gun' ? gunModel : null);
+  renderWeapon();
+}
+function jump() {
+  if (ACT.y > 0 || ACT.vy !== 0) return;
+  if (player.ch.crouching) player.ch.crouch(false);
+  ACT.vy = 6.2;
+  player.ch.setAir(true);
+}
+function updateActions(dt) {
+  if (!player) return;
+  ACT.cd = Math.max(0, ACT.cd - dt);
+  if (ACT.reload > 0) { ACT.reload -= dt; if (ACT.reload <= 0) { ACT.reload = 0; ACT.ammo = ACT.maxAmmo; renderWeapon(); toast('💧 Đã nạp đầy nước!'); } }
+  if (ACT.y > 0 || ACT.vy !== 0) {
+    ACT.vy -= 18 * dt;
+    ACT.y += ACT.vy * dt;
+    if (ACT.y <= 0) { ACT.y = 0; ACT.vy = 0; player.ch.setAir(false); }
+    player.ch.root.position.y = ACT.y;
+  }
+  if (keys.KeyZ) cam.yaw += 1.6 * dt;
+  if (keys.KeyX) cam.yaw -= 1.6 * dt;
+  if (!drops.length) return;
+  const tg = targets();
+  for (let i = drops.length - 1; i >= 0; i--) {
+    const d = drops[i];
+    d.life -= dt;
+    d.v.y -= 6 * dt;
+    d.m.position.addScaledVector(d.v, dt);
+    let hit = d.life <= 0 || d.m.position.y <= 0.05;
+    if (!hit) for (const t of tg) {
+      const q = t.ch.root.position;
+      if (Math.hypot(q.x - d.m.position.x, q.z - d.m.position.z) < 0.45 && d.m.position.y < 1.9) { onHit(t, 'splash'); hit = true; break; }
+    }
+    if (hit) { scene.remove(d.m); drops.splice(i, 1); }
+  }
 }
 
 // ---------- objective marker ----------
@@ -293,7 +433,7 @@ function refreshHud() {
     $('#hud-day').textContent = 'Quản lý · Đi dạo DU35';
     $('#hud-clock').textContent = S.clock;
     const asked = Object.values(S.mgr || {}).filter((x) => x.asked).length;
-    $('#obj-text').textContent = `Hỏi thăm mọi người: ${asked}/${fillers.length} · Phím R: báo cáo tiến độ`;
+    $('#obj-text').textContent = `Hỏi thăm mọi người: ${asked}/${fillers.length} · Phím B: báo cáo tiến độ`;
     renderStats(S.stats);
     return;
   }
@@ -367,7 +507,7 @@ function showDirectory() {
 }
 
 // ================= Vai Quản lý: đi dạo, hỏi thăm, nắm tiến độ =================
-const MGR_INTRO = 'Hôm nay bạn là quản lý. Hãy đi dạo quanh văn phòng, đến gần từng người và bấm E để hỏi thăm: xem họ đang làm gì, tiến độ ra sao, có vướng mắc không.\n\nĐộng viên, gỡ vướng, nhắc deadline hay rủ đi cà phê sẽ ảnh hưởng tới tinh thần team và tiến độ dự án.\n\nPhím R: xem báo cáo tiến độ theo khu. Ra cửa chính để kết thúc.';
+const MGR_INTRO = 'Hôm nay bạn là quản lý. Hãy đi dạo quanh văn phòng, đến gần từng người và bấm E để hỏi thăm: xem họ đang làm gì, tiến độ ra sao, có vướng mắc không.\n\nĐộng viên, gỡ vướng, nhắc deadline hay rủ đi cà phê sẽ ảnh hưởng tới tinh thần team và tiến độ dự án.\n\nPhím B: xem báo cáo tiến độ theo khu. Ra cửa chính để kết thúc.';
 const addMin = (hhmm, m) => {
   const [h, mm] = hhmm.split(':').map(Number);
   const t = Math.min(23 * 60 + 59, h * 60 + mm + m);
@@ -695,6 +835,7 @@ function frame() {
     for (const n of fillers) if (n.label) n.label.visible = n.ch.pose !== 'hidden' && Math.hypot(n.ch.root.position.x - pp.x, n.ch.root.position.z - pp.z) < (isManager() ? 4.0 : 3.0);
   }
   updatePlayer(dt);
+  updateActions(dt);
   updateCamera(dt);
   if (S && player) {
     const tp = stepTargetPos(curStep());
@@ -729,7 +870,8 @@ if (location.search.includes('debug')) {
     interact() { const it = findInteraction(); if (it) runInteraction(it); return it?.text; },
     npcs, step: () => curStep(), mergeInfo, fillers: () => fillers.length,
     bench() { const t0 = performance.now(); for (let i = 0; i < 20; i++) renderer.render(scene, camera); renderer.getContext().finish(); return { msPerFrame: ((performance.now() - t0) / 20).toFixed(2), calls: renderer.info.render.calls, tris: renderer.info.render.triangles }; },
-    ff(sec) { for (let i = 0; i < sec * 30; i++) { for (const n of Object.values(npcs)) updateNpc(n, 1 / 30); ambient.update(1 / 30); } },
+    ff(sec) { for (let i = 0; i < sec * 30; i++) { for (const n of Object.values(npcs)) updateNpc(n, 1 / 30); ambient.update(1 / 30); updateActions(1 / 30); } },
+    act: { doPunch, doShoot, toggleWeapon, jump, startReload, ACT, get player() { return player; } },
     ambient, managerTalk: (i) => managerTalk(fillers[i]), showReport, fillerList: fillers,
   };
 }

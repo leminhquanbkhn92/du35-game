@@ -27,9 +27,21 @@ cd du35-deploy && git add -A && git commit -m "Cập nhật game" && git push
 
 ## Cách chơi
 
-- **WASD / phím mũi tên**: di chuyển · **Shift**: chạy · **E**: tương tác
-- **Chuột phải kéo**: xoay camera · **Lăn chuột**: zoom
-- Đi theo mũi tên cam để làm nhiệm vụ. Có thể trò chuyện với đồng nghiệp và pha cà phê ở pantry để hồi năng lượng.
+| Phím | Tác dụng |
+|---|---|
+| WASD / mũi tên | Di chuyển (Shift: chạy) |
+| Space | Nhảy |
+| C | Ngồi xuống / đứng lên (đi chậm hơn) |
+| E | Tương tác, nói chuyện |
+| Chuột trái | Đấm (hoạt hình) hoặc bắn súng nước, hướng theo con trỏ chuột |
+| Q | Đổi giữa tay không và súng nước |
+| R | Nạp nước cho súng (10 phát) |
+| Giữ chuột phải | Zoom gần |
+| Lăn chuột / Z, X / kéo chuột giữa | Zoom, xoay camera |
+| B | Báo cáo tiến độ (vai Quản lý) |
+
+- Đi theo mũi tên cam để làm nhiệm vụ. Có thể trò chuyện với đồng nghiệp và pha cà phê ở góc cà phê để hồi năng lượng.
+- Bị đấm thì đồng nghiệp xoay vòng 💫, bị bắn nước thì lắc lư 💦. Đấm quá tay làm **tinh thần team giảm nhẹ**; súng nước thì vô hại.
 
 ## Vai Quản lý (chế độ đi dạo)
 
